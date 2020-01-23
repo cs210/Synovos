@@ -8,7 +8,8 @@
 
 |          Member         |           Email            |       Photo       |
 |:-----------------------:|:--------------------------:|:-----------------:|
-|    Marco Mora-Mendoza   |    marcom3@stanford.edu    |  | 
+|    Marco Mora-Mendoza   |    marcom3@stanford.edu    |  |
+|    Andrej Safundzic     |    andrej@stanford.edu     | ![Andrej](https://drive.google.com/file/d/1HEEkXAr9hPPMc4rc2X8BV1ObgLeup9Fj/view?usp=sharing)|
 
 ## **Team Skill Matrix**
 
