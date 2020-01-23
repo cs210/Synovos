@@ -20,7 +20,7 @@
 | Andrej Safundzic | Blue | Product Management, Design Thinking, Data Science, Entrepreneurship | Building usable software, Finding real needs, Structured, Having Fun, Boldness | Sometimes a lil pushy to reach closure |
 | Jose Giron Nanne | White | AI, programming, Front-end, needfinding | Learning, Building Software, Addressing real needs | Leaving stuff to the last minute |
 | Nikita Demir | Green | CS/AI, Software Engineering, Infra | Adapting quickly, Solving technical challenges, Teamworking | Time management, deadlines |
-| Nico Tellez | Black | Product design, communication, data-collection, Python |Breaking big problems into its micro-components| Hacking|
+| Nico Tellez | Black | Product design, communication, data-collection, Python |Learning quickly, breaking big problems into small tasks|Time-management |
 | | | | | |
 | | | | | |
 | | | | | |
