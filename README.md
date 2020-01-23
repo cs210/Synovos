@@ -21,9 +21,6 @@
 | Jose Giron Nanne | White | AI, programming, Front-end, needfinding | Learning, Building Software, Addressing real needs | Leaving stuff to the last minute |
 | Nikita Demir | Green | CS/AI, Software Engineering, Infra | Adapting quickly, Solving technical challenges, Teamworking | Time management, deadlines |
 | Nico Tellez | Black | Product design, communication, data-collection, Python |Learning quickly, breaking big problems into small tasks|Time-management |
-| | | | | |
-| | | | | |
-| | | | | |
 
 ## **Communication Links**
 - Communication: 	[Slack](predictivityworkspace.slack.com)
