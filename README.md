@@ -1,6 +1,4 @@
-# Predictivity
-
-**Design a logo:** In progress...
+![Logo](https://user-images.githubusercontent.com/23620644/73019737-09cf4e80-3dd9-11ea-855c-7d1cdd3e4b6b.png)
 
 [**Team Music**](https://www.youtube.com/watch?v=YBsHOixcjeE)
 
