@@ -9,6 +9,7 @@
 |    Marco Mora-Mendoza   |    marcom3@stanford.edu    |  |
 |    Andrej Safundzic     |    andrej@stanford.edu     | ![Andrej](https://images.ctfassets.net/jq1xw71av3v5/3Zfn2xJhkhpPJ5HrFQ546p/5017307152a652771b71f25ea3cf3897/Andrej_Safundzic_Profilfoto.png?w=1082)|
 |    Nikita Demir   |    ndemir@stanford.edu    | ![Nikita](https://avatars1.githubusercontent.com/u/23620644?s=460&v=4) | 
+|    Jose Giron   |    jmgiron@stanford.edu    | ![Jose](https://drive.google.com/file/d/1YQ_Fm4U2pwtSGsvEI_GjV6A6pa545tr7/view?usp=sharing) | 
 
 ## **Team Skill Matrix**
 
