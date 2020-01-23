@@ -6,7 +6,7 @@
 
 |          Member         |           Email            |       Photo       |
 |:-----------------------:|:--------------------------:|:-----------------:|
-|    Marco Mora-Mendoza   |    marcom3@stanford.edu    |  |
+|    Marco Mora-Mendoza   |    marcom3@stanford.edu    |  ![Mora-Mendoza Marco photo](https://user-images.githubusercontent.com/21184630/73031460-08118500-3df1-11ea-8a51-6272eb3c1ca1.png)|
 |    Andrej Safundzic     |    andrej@stanford.edu     | ![Andrej](https://images.ctfassets.net/jq1xw71av3v5/3Zfn2xJhkhpPJ5HrFQ546p/5017307152a652771b71f25ea3cf3897/Andrej_Safundzic_Profilfoto.png?w=1082)|
 |    Nikita Demir   |    ndemir@stanford.edu    | ![Nikita](https://avatars1.githubusercontent.com/u/23620644?s=460&v=4) | 
 |    Jose Giron   |    jmgiron@stanford.edu    | ![Jose](https://user-images.githubusercontent.com/30703536/73022902-4aca6180-3ddf-11ea-9917-cb6844ee3ae6.jpeg) | 
