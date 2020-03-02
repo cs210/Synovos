@@ -1,0 +1,8 @@
+.cs142-topbar-appBar {
+  height: 60px;
+  justify-content: center;
+}
+
+.app-bar-right {
+  margin-left: auto;
+}
