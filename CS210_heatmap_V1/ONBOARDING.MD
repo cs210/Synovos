@@ -30,7 +30,7 @@ This allows you to review the changes you're merging in one last time
 Or... maybe skip the reviewing and use some terminal based command?
 
 
-*How to run the code>*
+**How to run the code**
 
 Do the following things first
 
