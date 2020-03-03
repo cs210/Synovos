@@ -11,6 +11,7 @@ import './styles/main.css';
 // import necessary components
 import TopBar from './components/topBar/TopBar';
 import Sidebar from './components/sidebar/sidebar';
+import Listview from './components/listview/listview';
 
 
 class Index extends React.Component {
@@ -46,7 +47,7 @@ class Index extends React.Component {
               <Grid item sm={9}>
                 <Paper className="cs142-main-grid-item">
                   <Switch>
-                    <Route exact path="/"
+                    <Route exact path="/Home"
                        render={() =>
                            <Typography variant="body1">
                              Welcome to your Heatmap Prototype! This <a href="https://material-ui.com/demos/paper/">Paper</a> component
@@ -57,6 +58,9 @@ class Index extends React.Component {
                              so you should delete this Route component once you get started.
                            </Typography>}
                     />
+                    <Route exact path="/ListView">
+                        <Listview></Listview>
+                    </Route>
                   </Switch>
                 </Paper>
               </Grid>
