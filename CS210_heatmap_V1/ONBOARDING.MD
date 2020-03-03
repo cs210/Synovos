@@ -30,12 +30,15 @@ This allows you to review the changes you're merging in one last time
 Or... maybe skip the reviewing and use some terminal based command?
 
 
-<How to run the code>
+*How to run the code>*
+
 Do the following things first
+
 1. install node.js and set the node command as a path variable
 2. install mongodb and set the mongodb command as a path variable
 
 Run the code with the following commands in your directory:
+
 1. npm install 
 2. To run mongodb -> write "mongod"
 3. To load the database -> "node loadDatabase.js" (this file has a few entries for our database!)
