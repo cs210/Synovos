@@ -24,17 +24,24 @@ class Sidebar extends React.Component {
                 </Typography>
                 <List component="nav">
                     <ListItem key={1} button >
-                        <NavLink to="/Home" activeClassName="hurray">
+                        <NavLink to="/">
                             Home
                         </NavLink>
                     </ListItem>
                     <ListItem key={2} button >
-                        <NavLink to="/ListView" activeClassName="hurray">
-                            List View
+                        <NavLink to="/Heatmap">
+                            Heat Map
                         </NavLink>
                     </ListItem>
                     <ListItem key={3} button >
-                        <ListItemText primary={"Button 3"} />
+                        <NavLink to="/Listview">
+                            List View
+                        </NavLink>
+                    </ListItem>
+                    <ListItem key={4} button >
+                        <NavLink to="/Onboarding">
+                            Onboarding
+                        </NavLink>
                     </ListItem>
                 </List>
             </div>

@@ -34,7 +34,7 @@ class TopBar extends React.Component {
             </section>
             <section className="app-bar-right">
               <Typography variant="h5" color="inherit">
-                {"Heatmap Dashboard"}
+                {"Onboarding Dashboard"}
               </Typography>
             </section>
           </Toolbar>
