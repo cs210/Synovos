@@ -1,1 +1,4 @@
 .DS_Store
+CS210_heatmap_V1/node_modules/
+CS210_heatmap_V1/compiled/
+*/.idea/

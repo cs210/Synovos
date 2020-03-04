@@ -6,6 +6,7 @@ import {
   Typography,
 }
 from '@material-ui/core';
+import { NavLink } from 'react-router-dom';
 import './sidebar.css';
 import axios from 'axios';
 
@@ -23,13 +24,24 @@ class Sidebar extends React.Component {
                 </Typography>
                 <List component="nav">
                     <ListItem key={1} button >
-                        <ListItemText primary={"Button 1"} />
+                        <NavLink to="/">
+                            Home
+                        </NavLink>
                     </ListItem>
                     <ListItem key={2} button >
-                        <ListItemText primary={"Button 2"} />
+                        <NavLink to="/Heatmap">
+                            Heat Map
+                        </NavLink>
                     </ListItem>
                     <ListItem key={3} button >
-                        <ListItemText primary={"Button 3"} />
+                        <NavLink to="/Listview">
+                            List View
+                        </NavLink>
+                    </ListItem>
+                    <ListItem key={4} button >
+                        <NavLink to="/Onboarding">
+                            Onboarding
+                        </NavLink>
                     </ListItem>
                 </List>
             </div>

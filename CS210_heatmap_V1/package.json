@@ -20,7 +20,7 @@
     "file-loader": "^3.0.1",
     "js-yaml": "^3.13.1",
     "mongoose": "^5.9.1",
-    "nodemon": "^1.18.10",
+    "nodemon": "^1.19.4",
     "prismjs": "^1.15.0",
     "promise": "^8.0.2",
     "react": "^16.5.2",
