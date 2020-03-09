@@ -2,10 +2,80 @@ import React from 'react';
 import {
     Typography,
 } from '@material-ui/core';
-import floorplan from '../../images/GatesBasement.png'
-import gradientBar from '../../images/GradientBar.png'
+import floorplan from '../../images/GatesBasement.png';
+import gradientBar from '../../images/GradientBar.png';
+import Slider from '@material-ui/core/Slider';
+import PropTypes from 'prop-types';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
-console.log(floorplan);
+const PrettoSlider = withStyles({
+    root: {
+        color: '#DE0F0F',
+        height: 8,
+    },
+    thumb: {
+        height: 24,
+        width: 24,
+        backgroundColor: '#fff',
+        border: '2px solid currentColor',
+        marginTop: -8,
+        marginLeft: -12,
+        '&:focus,&:hover,&$active': {
+            boxShadow: 'inherit',
+        },
+    },
+    active: {},
+    valueLabel: {
+        left: 'calc(-50% + 4px)',
+    },
+    track: {
+        height: 8,
+        borderRadius: 4,
+    },
+    rail: {
+        height: 8,
+        borderRadius: 4,
+    },
+})(Slider);
+
+const marks = [
+    {
+        value: 0,
+        label: '12am',
+    },
+    {
+        value: 3,
+        label: '3am',
+    },
+    {
+        value: 6,
+        label: '6am',
+    },
+    {
+        value: 9,
+        label: '9am',
+    },
+    {
+        value: 12,
+        label: '12pm',
+    },
+    {
+        value: 15,
+        label: '3pm',
+    },
+    {
+        value: 18,
+        label: '6pm',
+    },
+    {
+        value: 21,
+        label: '9pm',
+    },
+    {
+        value: 24,
+        label: '11:59pm',
+    },
+];
 
 class Heatmap extends React.Component {
     constructor(props) {
@@ -15,6 +85,7 @@ class Heatmap extends React.Component {
     render() {
         return (
             <div>
+                {/*
             <Typography variant="body1">
                 Welcome to your Heatmap Prototype! This <a href="https://material-ui.com/demos/paper/">Paper</a> component
                 displays the main content of the application. The {"sm={9}"} prop in
@@ -24,6 +95,7 @@ class Heatmap extends React.Component {
                         so you should delete this Route component once you get started.
                         This is a new line in the heatmap to make sure it is updating.
             </Typography>
+            */}
                 <div>
                 <button type="button">Building</button>
                 <button type="button">Floor</button>
@@ -37,20 +109,7 @@ class Heatmap extends React.Component {
                 <div>
                     <img src='../../images/GatesBasement.png' width="500" />
                 </div>
-                <input type="range" min="1" max="100" value="50" class="slider" id="myRange" />
-                <table>
-                    <tr>
-                        <th>12am</th>
-                        <th>3am</th>
-                        <th>6am</th>
-                        <th>9am</th>
-                        <th>12pm</th>
-                        <th>3pm</th>
-                        <th>6pm</th>
-                        <th>9pm</th>
-                        <th>11:59pm</th>
-                    </tr>
-                </table>
+                <PrettoSlider max="24" valueLabelDisplay="on" aria-label="pretto slider" marks={marks} defaultValue={12} />
             </div>
         );
     }
