@@ -1,4 +1,5 @@
 import React from 'react';
+import './heatmap.css';
 import {
     Typography,
 } from '@material-ui/core';
@@ -100,17 +101,26 @@ class Heatmap extends React.Component {
                 <button type="button">Building</button>
                 <button type="button">Floor</button>
                 <button type="button">Sensors</button>
-                    <button type="button">Week</button>
-                    <textarea> Feb 10 2020 </textarea>
-                    <textarea> Feb 19 2020 </textarea>
-                    <button type="button">Download</button>
+                <button type="button">Week</button>
+                <textarea> Feb 10 2020 </textarea>
+                <textarea> Feb 19 2020 </textarea>
+                <button type="button">Download</button>
+                <div class="gradientBar">
+                {/*
+                  <table>
+                    <tr>
+                      <td>
+                      <div class="leftCell">[min people]</div>
+                      <div class="rightCell">[max people]</div>
+                      </td>
+                    </tr>
+                  </table>
+                */}
+                  </div>
+                <img id="floormap" src='../../images/GatesBasement.png' />
                 </div>
-                <img src='../../images/GradientBar.png' width="500" />
-                <div>
-                    <img src='../../images/GatesBasement.png' width="500" />
+                <PrettoSlider id="slider" max="24" valueLabelDisplay="on" aria-label="pretto slider" marks={marks} defaultValue={12} />
                 </div>
-                <PrettoSlider max="24" valueLabelDisplay="on" aria-label="pretto slider" marks={marks} defaultValue={12} />
-            </div>
         );
     }
 }
