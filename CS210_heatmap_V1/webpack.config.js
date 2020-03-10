@@ -34,4 +34,11 @@ module.exports = {
     publicPath: '/',
     filename: '[name].bundle.js',
   },
+  node: {
+    child_process: 'empty',
+    fs: 'empty',
+    crypto: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
 };
