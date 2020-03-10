@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     Typography,
-    TextField
+    TextField,
+    Button
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -129,8 +130,10 @@ class Onboarding extends React.Component {
           value={this.state.sensorName}
         />
         </div>
-        <input type="submit" value="Submit" />
-        <div> {JSON.stringify(this.state.jsonData)}
+        <Button variant="contained" type="submit" value="Submit">Add Sensor</Button>
+        <Button variant="contained" type="submit" value="Submit" color="primary">Finished</Button>
+        <div>
+        {JSON.stringify(this.state.jsonData)}
         </div>
       </form>
     );
