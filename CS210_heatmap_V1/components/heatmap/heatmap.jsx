@@ -25,6 +25,73 @@ const buildings = ["Gates", "Huang"];
 
 const floors = ["1st Floor", "2nd floor", "3rd floor"];
 
+const occupancyColors = ['null','#00A3FF','#FF9700','#FF6A00','#FF0000']
+
+
+function getColor1(value){
+  var color = 0;
+  if(value < 9){
+    color = 0;
+  } else if (value < 12){
+    color = 3;
+  } else if (value < 14){
+    color = 4;
+  } else if (value < 16){
+    color = 1;
+  } else {
+    color = 0;
+  }
+  return occupancyColors[color];
+}
+
+function getColor2(value){
+  var color = 0;
+  if(value < 9){
+    color = 0;
+  } else if (value < 12){
+    color = 2;
+  } else if (value < 14){
+    color = 3;
+  } else if (value < 16){
+    color = 3;
+  } else {
+    color = 0;
+  }
+  return occupancyColors[color];
+}
+
+function getColor3(value){
+  var color = 0;
+  if(value < 9){
+    color = 0;
+  } else if (value < 12){
+    color = 1;
+  } else if (value < 14){
+    color = 2;
+  } else if (value < 16){
+    color = 1;
+  } else {
+    color = 0;
+  }
+  return occupancyColors[color];
+}
+
+function getColor4(value){
+  var color = 0;
+  if(value < 9){
+    color = 0;
+  } else if (value < 12){
+    color = 5;
+  } else if (value < 14){
+    color = 4;
+  } else if (value < 16){
+    color = 3;
+  } else {
+    color = 0;
+  }
+  return occupancyColors[color];
+}
+
 const PrettoSlider = withStyles({
     root: {
         color: '#DE0F0F',
@@ -94,8 +161,9 @@ const marks = [
     },
 ];
 
-class Heatmap extends React.Component {
+const isBackgroundRed = true;
 
+class Heatmap extends React.Component {
       constructor(props) {
           super(props);
           this.state = {
@@ -216,10 +284,18 @@ class Heatmap extends React.Component {
   <div class="parent">
     <img id="floormap" src='../../images/GatesBasement.png' />
     <svg class="svgLayout">
-    <rect id="room1" class="roomLayout" x = "445" y = "215" width="95" height="105" />
-    <rect id="room2" class="roomLayout" x = "245" y = "390" width="220" height="65"/>
-    <rect id="room3" class="roomLayout" x = "530" y = "469" width="75" height="60"/>
-    <rect id="room4" class="roomLayout" x = "680" y = "8" width="65" height="120"/>
+    <rect id="room1" class="roomLayout" x = "445" y = "215" width="95" height="105" style={{
+        fill: getColor1(12)
+      }} />
+    <rect id="room2" class="roomLayout" x = "245" y = "390" width="220" height="65"style={{
+        fill: getColor2(12)
+      }}/>
+    <rect id="room3" class="roomLayout" x = "530" y = "469" width="75" height="60"style={{
+        fill: getColor3(12),
+      }}/>
+    <rect id="room4" class="roomLayout" x = "680" y = "8" width="65" height="120"style={{
+        fill: getColor4(12),
+      }}/>
     </svg>
   </div>
 
