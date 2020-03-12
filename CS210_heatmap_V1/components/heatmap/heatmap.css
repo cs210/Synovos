@@ -1,0 +1,38 @@
+#floormap {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 80%;
+  min-width: 20%;
+  margin-bottom: 20px;
+}
+
+#slider {
+  width: 94%;
+  margin-left: 2%;
+}
+.gradientBar .leftCell{
+  float:right;
+  text-align: right;
+}
+.bradientBar .rightCell{
+  float: right;
+  text-align: right;
+}
+.gradientBar{
+  font-style: normal;
+  font-family: sans-serif;
+  font-size: 15px;
+  height:6px;
+  width:100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-image: -webkit-gradient(
+      linear,
+      left bottom,
+      right 0,
+      color-stop(0, rgb(0,0,255)),
+      color-stop(0.50, rgb(122,0,122)),
+      color-stop(1, rgb(255,0,0))
+  );
+}
