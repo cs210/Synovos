@@ -55,10 +55,11 @@ class GraphList extends React.Component {
         super(props);
         this.state = {
             ExpandedGraphView: false,
+            SelectedRow: -1,
         }
         this.data = this.loadData(data);
         console.log(this.data);
-        this.toggleColumn = this.toggleColumn.bind(this);
+        this.handleRowClick = this.handleRowClick.bind(this);
     }
 
     loadData(json){
@@ -69,11 +70,22 @@ class GraphList extends React.Component {
         return data;
     }
 
-    toggleColumn() {
-        const currView = this.state.ExpandedGraphView;
-        this.setState({
-            ExpandedGraphView: !currView
-        })
+    handleRowClick(key){
+        let newIndex = key;
+        console.log(key);
+        console.log(this.state.SelectedRow);
+        if(this.state.SelectedRow === newIndex){
+            this.setState({
+                SelectedRow: -1,
+                ExpandedGraphView: false,
+            });
+        } else {
+            this.setState({
+                SelectedRow: newIndex,
+                ExpandedGraphView: true,
+            })
+        }
+
     }
 
     render() {
@@ -106,8 +118,13 @@ class GraphList extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.data.map(room => (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={room[0]}>
+                            {this.data.map((room, index) => (
+                                <TableRow hover
+                                          role="checkbox" tabIndex={index}
+                                          key={index}
+                                          selected = {index == this.state.SelectedRow}
+                                          onClick={() => {this.handleRowClick(index)}}
+                                >
                                     {columns.map(column => {
                                         switch(column.label){
                                             case 'room':
@@ -115,6 +132,7 @@ class GraphList extends React.Component {
                                                     <TableCell
                                                         key={column.id}
                                                         style={{minWidth: column.minWidth, width: column.width, height: ROOM_HEIGHT, padding: ROOM_PADDING}}
+                                                        tabIndex={index}
                                                     >
                                                         {room[0]}
                                                     </TableCell>);
@@ -124,6 +142,7 @@ class GraphList extends React.Component {
                                                     <TableCell
                                                         key={column.id}
                                                         style={{minWidth: column.minWidth, width: column.width, height: GRAPH_HEIGHT, padding: 0}}
+                                                        tabIndex={index}
                                                     >
                                                         <ResponsiveContainer width="100%" height={GRAPH_HEIGHT}>
                                                             <LineChart data={room[1]}>
@@ -169,7 +188,7 @@ class GraphList extends React.Component {
                                     }}
                                 >
                                     <ResponsiveContainer width="100%" height={500}>
-                                        <LineChart data={this.data[0][1]}>
+                                        <LineChart data={this.data[this.state.SelectedRow][1]}>
                                             <XAxis dataKey="time" />
                                             <YAxis dataKey="occupancy"/>
                                             <CartesianGrid strokeDasharray="3 3" />
@@ -183,9 +202,6 @@ class GraphList extends React.Component {
                     </GraphTable>
                     }
                 </div>
-                <Button onClick={this.toggleColumn}>
-                    toggle column
-                </Button>
             </React.Fragment>
         );
     }
