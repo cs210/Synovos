@@ -25,10 +25,11 @@ const buildings = ["Gates", "Huang"];
 
 const floors = ["1st Floor", "2nd floor", "3rd floor"];
 
-const occupancyColors = ['null','#00A3FF','#FF9700','#FF6A00','#FF0000']
+const occupancyColors = ['null','#8B00FF','#FFF500','#FF8700','#FF0000']
 
 
 function getColor1(value){
+  console.log(value)
   var color = 0;
   if(value < 9){
     color = 0;
@@ -49,7 +50,7 @@ function getColor2(value){
   if(value < 9){
     color = 0;
   } else if (value < 12){
-    color = 2;
+    color = 5;
   } else if (value < 14){
     color = 3;
   } else if (value < 16){
@@ -161,7 +162,6 @@ const marks = [
     },
 ];
 
-const isBackgroundRed = true;
 
 class Heatmap extends React.Component {
       constructor(props) {
@@ -170,10 +170,19 @@ class Heatmap extends React.Component {
               building: "",
               floor: "",
               date: new Date(),
+              sliderValue: 16
           };
           this.handleBuildingChange = this.handleBuildingChange.bind(this);
           this.handleFloorChange = this.handleFloorChange.bind(this);
           this.handleDateChange = this.handleDateChange.bind(this);
+          this.handleSliderChange = this.handleSliderChange.bind(this);
+      }
+
+      handleSliderChange(event){
+        console.log(parseInt(event.target.innerText))
+        this.setState({
+            sliderValue: parseInt(event.target.style.innerText),
+        });
       }
 
       handleBuildingChange(event) {
@@ -313,7 +322,8 @@ class Heatmap extends React.Component {
 */}
 
                 </div>
-                <PrettoSlider id="slider" max="24" valueLabelDisplay="on" aria-label="pretto slider" marks={marks} defaultValue={12} />
+                <PrettoSlider id="slider" max="24" valueLabelDisplay="on" aria-label="pretto slider" marks={marks} defaultValue={12} onChange={this.handleSliderChange}>
+                </PrettoSlider>
                 </div>
             </div>
             </div>
