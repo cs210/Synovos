@@ -32,31 +32,19 @@ class Filters extends React.Component {
     }
 
     handleBuildingChange(event) {
-        const floor= this.state.floor;
-        const date = this.state.date;
         this.setState({
             building: event.target.value,
-            floor: floor,
-            date: date
         });
     }
 
     handleFloorChange(event) {
-        const building= this.state.building;
-        const date = this.state.date;
         this.setState({
-            building: building,
             floor: event.target.value,
-            date: date
         });
     }
 
     handleDateChange(date) {
-        const building= this.state.building;
-        const floor= this.state.floor;
         this.setState({
-            building: building,
-            floor: floor,
             date: date
         });
     }
