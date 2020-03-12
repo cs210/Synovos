@@ -2,13 +2,12 @@ import React from 'react';
 import {
   List,
   ListItem,
-  ListItemText,
   Typography,
+  Button,
 }
 from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 import './sidebar.css';
-import axios from 'axios';
 
 class Sidebar extends React.Component {
     constructor(props) {
@@ -24,23 +23,43 @@ class Sidebar extends React.Component {
                 </Typography>
                 <List component="nav">
                     <ListItem key={1} button >
-                        <NavLink to="/">
-                            Home
+                        <NavLink
+                            to="/"
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <Button>
+                                Home
+                            </Button>
                         </NavLink>
                     </ListItem>
                     <ListItem key={2} button >
-                        <NavLink to="/Heatmap">
-                            Heat Map
+                        <NavLink
+                            to="/Heatmap"
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <Button>
+                                Heat Map
+                            </Button>
                         </NavLink>
                     </ListItem>
                     <ListItem key={3} button >
-                        <NavLink to="/Listview">
-                            List View
+                        <NavLink
+                            to="/Listview"
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <Button>
+                                List View
+                            </Button>
                         </NavLink>
                     </ListItem>
                     <ListItem key={4} button >
-                        <NavLink to="/Onboarding">
-                            Onboarding
+                        <NavLink
+                            to="/Onboarding"
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <Button>
+                                Onboarding
+                            </Button>
                         </NavLink>
                     </ListItem>
                 </List>
