@@ -9,72 +9,20 @@ import {
 } from '@material-ui/core';
 import {
     ResponsiveContainer,
-    AreaChart,
+    LineChart,
     XAxis,
     YAxis,
     CartesianGrid,
     Tooltip,
-    ReferenceLine,
-    Area
+    Line,
 } from 'recharts';
 import './graphlist.css';
 import { withStyles } from '@material-ui/core/styles';
+import data from '../../data/predictivityData.json';
 
 const columns = [
     {id: 'room', label: 'room', minWidth: 170, width: "30%"},
-    {id: 'content', label: 'content', minWidth: 300, width: "70%"},
-]
-
-const rows = [
-    {room: "Room 101", content: "important data"},
-    {room: "Room 102", content: "More important data"},
-    {room: "Room 103", content: "More important data"},
-    {room: "Room 104", content: "More important data"},
-]
-
-const data = [
-    {
-        "name": "Page A",
-        "uv": 4000,
-        "pv": 2400,
-        "amt": 2400
-    },
-    {
-        "name": "Page B",
-        "uv": 3000,
-        "pv": 1398,
-        "amt": 2210
-    },
-    {
-        "name": "Page C",
-        "uv": 2000,
-        "pv": 9800,
-        "amt": 2290
-    },
-    {
-        "name": "Page D",
-        "uv": 2780,
-        "pv": 3908,
-        "amt": 2000
-    },
-    {
-        "name": "Page E",
-        "uv": 1890,
-        "pv": 4800,
-        "amt": 2181
-    },
-    {
-        "name": "Page F",
-        "uv": 2390,
-        "pv": 3800,
-        "amt": 2500
-    },
-    {
-        "name": "Page G",
-        "uv": 3490,
-        "pv": 4300,
-        "amt": 2100
-    }
+    {id: 'occupancy', label: 'occupancy', minWidth: 300, width: "70%"},
 ]
 
 const styles = {
@@ -97,23 +45,47 @@ const styles = {
     },
 };
 
+const GRAPH_HEIGHT = 100;
+const ROOM_PADDING = 16;
+const ROOM_HEIGHT = GRAPH_HEIGHT - 2 * ROOM_PADDING;
+
 class GraphList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             ExpandedGraphView: false,
+            SelectedRow: -1,
         }
-
-        this.toggleColumn = this.toggleColumn.bind(this);
+        this.data = this.loadData(data);
+        console.log(this.data);
+        this.handleRowClick = this.handleRowClick.bind(this);
     }
 
-    toggleColumn() {
-        const currView = this.state.ExpandedGraphView;
-        this.setState({
-            ExpandedGraphView: !currView
-        })
-        console.log(currView)
+    loadData(json){
+        let data = [];
+        for(let key in json){
+            data.push([key, json[key]]);
+        }
+        return data;
+    }
+
+    handleRowClick(key){
+        let newIndex = key;
+        console.log(key);
+        console.log(this.state.SelectedRow);
+        if(this.state.SelectedRow === newIndex){
+            this.setState({
+                SelectedRow: -1,
+                ExpandedGraphView: false,
+            });
+        } else {
+            this.setState({
+                SelectedRow: newIndex,
+                ExpandedGraphView: true,
+            })
+        }
+
     }
 
     render() {
@@ -129,7 +101,7 @@ class GraphList extends React.Component {
                         <TableHead>
                             <TableRow>
                                 {columns.map(column => {
-                                    const shouldHideColumn = column.id === 'content' && this.state.ExpandedGraphView;
+                                    const shouldHideColumn = column.id === 'occupancy' && this.state.ExpandedGraphView;
                                     if(!shouldHideColumn) {
                                         return (
                                             <TableCell
@@ -146,35 +118,40 @@ class GraphList extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row, index) =>(
-                                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                            {this.data.map((room, index) => (
+                                <TableRow hover
+                                          role="checkbox" tabIndex={index}
+                                          key={index}
+                                          selected = {index == this.state.SelectedRow}
+                                          onClick={() => {this.handleRowClick(index)}}
+                                >
                                     {columns.map(column => {
                                         switch(column.label){
                                             case 'room':
                                                 return(
                                                     <TableCell
                                                         key={column.id}
-                                                        style={{minWidth: column.minWidth, width: column.width, height: 100, padding: 0}}
+                                                        style={{minWidth: column.minWidth, width: column.width, height: ROOM_HEIGHT, padding: ROOM_PADDING}}
+                                                        tabIndex={index}
                                                     >
-                                                        {row.room}
+                                                        {room[0]}
                                                     </TableCell>);
-                                            case 'content':
+                                            case 'occupancy':
                                                 return(
                                                     !this.state.ExpandedGraphView &&
                                                     <TableCell
                                                         key={column.id}
-                                                        style={{minWidth: column.minWidth, width: column.width, height: 100, padding: 0}}
+                                                        style={{minWidth: column.minWidth, width: column.width, height: GRAPH_HEIGHT, padding: 0}}
+                                                        tabIndex={index}
                                                     >
-                                                        <ResponsiveContainer width="100%" height={100}>
-                                                            <AreaChart data={data}>
-                                                                <XAxis dataKey="name" />
-                                                                <YAxis />
+                                                        <ResponsiveContainer width="100%" height={GRAPH_HEIGHT}>
+                                                            <LineChart data={room[1]}>
+                                                                <XAxis dataKey="time" />
+                                                                <YAxis dataKey="occupancy"/>
                                                                 <CartesianGrid strokeDasharray="3 3" />
                                                                 <Tooltip />
-                                                                <ReferenceLine x="Page C" stroke="green" label="Min PAGE" />
-                                                                <ReferenceLine y={4000} label="Max" stroke="red" strokeDasharray="3 3" />
-                                                                <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-                                                            </AreaChart>
+                                                                <Line type='Monotone' dataKey="occupancy"/>
+                                                            </LineChart>
                                                         </ResponsiveContainer>
                                                     </TableCell>
                                                 );
@@ -210,16 +187,14 @@ class GraphList extends React.Component {
                                         padding: 0
                                     }}
                                 >
-                                    <ResponsiveContainer width="100%" height={400}>
-                                        <AreaChart data={data}>
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                    <ResponsiveContainer width="100%" height={500}>
+                                        <LineChart data={this.data[this.state.SelectedRow][1]}>
+                                            <XAxis dataKey="time" />
+                                            <YAxis dataKey="occupancy"/>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <Tooltip />
-                                            <ReferenceLine x="Page C" stroke="green" label="Min PAGE" />
-                                            <ReferenceLine y={4000} label="Max" stroke="red" strokeDasharray="3 3" />
-                                            <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-                                        </AreaChart>
+                                            <Line type='Monotone' dataKey="occupancy"/>
+                                        </LineChart>
                                     </ResponsiveContainer>
                                 </TableCell>
                             </TableRow>
@@ -227,9 +202,6 @@ class GraphList extends React.Component {
                     </GraphTable>
                     }
                 </div>
-                <Button onClick={this.toggleColumn}>
-                    toggle column
-                </Button>
             </React.Fragment>
         );
     }
