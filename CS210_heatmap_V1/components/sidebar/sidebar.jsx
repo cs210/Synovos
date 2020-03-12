@@ -3,6 +3,7 @@ import {
   List,
   ListItem,
   Typography,
+  Button,
 }
 from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
@@ -26,7 +27,9 @@ class Sidebar extends React.Component {
                             to="/"
                             style={{ textDecoration: 'none' }}
                         >
-                            Home
+                            <Button>
+                                Home
+                            </Button>
                         </NavLink>
                     </ListItem>
                     <ListItem key={2} button >
@@ -34,7 +37,9 @@ class Sidebar extends React.Component {
                             to="/Heatmap"
                             style={{ textDecoration: 'none' }}
                         >
-                            Heat Map
+                            <Button>
+                                Heat Map
+                            </Button>
                         </NavLink>
                     </ListItem>
                     <ListItem key={3} button >
@@ -42,7 +47,9 @@ class Sidebar extends React.Component {
                             to="/Listview"
                             style={{ textDecoration: 'none' }}
                         >
-                            List View
+                            <Button>
+                                List View
+                            </Button>
                         </NavLink>
                     </ListItem>
                     <ListItem key={4} button >
@@ -50,7 +57,9 @@ class Sidebar extends React.Component {
                             to="/Onboarding"
                             style={{ textDecoration: 'none' }}
                         >
-                            Onboarding
+                            <Button>
+                                Onboarding
+                            </Button>
                         </NavLink>
                     </ListItem>
                 </List>
