@@ -170,7 +170,7 @@ class Heatmap extends React.Component {
               building: "",
               floor: "",
               date: new Date(),
-              sliderValue: 16
+              sliderValue: 12
           };
           this.handleBuildingChange = this.handleBuildingChange.bind(this);
           this.handleFloorChange = this.handleFloorChange.bind(this);
@@ -181,7 +181,7 @@ class Heatmap extends React.Component {
       handleSliderChange(event){
         console.log(parseInt(event.target.innerText))
         this.setState({
-            sliderValue: parseInt(event.target.style.innerText),
+            sliderValue: parseInt(event.target.innerText),
         });
       }
 
@@ -215,25 +215,12 @@ class Heatmap extends React.Component {
           });
       }
 
-
     render() {
       let colors=["#F0F8FF","#FFE4C4","#8A2BE2"];
         return (
           <div>
           <div>
             <div>
-
-                {/*
-            <Typography variant="body1">
-                Welcome to your Heatmap Prototype! This <a href="https://material-ui.com/demos/paper/">Paper</a> component
-                displays the main content of the application. The {"sm={9}"} prop in
-                the <a href="https://material-ui.com/layout/grid/">Grid</a> item component makes it responsively
-                        display 9/12 of the window. The Switch component enables us to conditionally render different
-                        components to this part of the screen. You don&apos;t need to display anything here on the homepage,
-                        so you should delete this Route component once you get started.
-                        This is a new line in the heatmap to make sure it is updating.
-            </Typography>
-            */}
                 <div>
                 <div className="filters">
                     <div className="filter">
@@ -290,20 +277,20 @@ class Heatmap extends React.Component {
                 */}
                   </div>
 
-  <div class="parent">
-    <img id="floormap" src='../../images/GatesBasement.png' />
+  <div class="map">
+    <img id="floorLayout" src='../../images/GatesBasement.png' />
     <svg class="svgLayout">
-    <rect id="room1" class="roomLayout" x = "445" y = "215" width="95" height="105" style={{
-        fill: getColor1(12)
+    <rect id="room1" class="roomLayout" x ="450" y ="220" height="19%" width="9%" style={{
+        fill: getColor1(this.state.sliderValue)
       }} />
-    <rect id="room2" class="roomLayout" x = "245" y = "390" width="220" height="65"style={{
-        fill: getColor2(12)
+    <rect id="room2" class="roomLayout" x = "277" y = "395" width="11.5%" height="12%"style={{
+        fill: getColor2(this.state.sliderValue)
       }}/>
-    <rect id="room3" class="roomLayout" x = "530" y = "469" width="75" height="60"style={{
-        fill: getColor3(12),
+    <rect id="room3" class="roomLayout" x = "540" y = "470" width="8%" height="12%"style={{
+        fill: getColor3(this.state.sliderValue),
       }}/>
-    <rect id="room4" class="roomLayout" x = "680" y = "8" width="65" height="120"style={{
-        fill: getColor4(12),
+    <rect id="room4" class="roomLayout" x = "688" y = "8" width="6%" height="22%"style={{
+        fill: getColor4(this.state.sliderValue),
       }}/>
     </svg>
   </div>
