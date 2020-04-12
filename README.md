@@ -31,7 +31,7 @@ Backend:
 This project uses the following for frontend:
 
 - ReactJS
-- [Create React App](https://github.com/facebook/create-react-app)
+- [Create React App](https://github.com/facebook/create-react-app) (MAYBE TO-DO)
 - [Material UI](https://material-ui.com/), a React implementation of [Material Design](https://material.io/design/).
 
 And the following for backend:
