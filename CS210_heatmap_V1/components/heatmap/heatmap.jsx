@@ -10,87 +10,27 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import floorplan from '../../images/GatesBasement.png';
-import gradientBar from '../../images/GradientBar.png';
 import Slider from '@material-ui/core/Slider';
 import PropTypes from 'prop-types';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Filters from '../filters/filters.jsx';
 import '../filters/filters.css';
 import DateFnsUtils from '@date-io/date-fns';
-
 import '../filters/filters.css';
 
-const buildings = ["Gates", "Huang"];
+//TODO: Import from json
+import * as jsonData from "./sample_data/sample1.json";
+var buildings = Object.keys(jsonData);
+var floors = [];
+var image = "../../images/GatesF0.png"
 
-const floors = ["1st Floor", "2nd floor", "3rd floor"];
-
-const occupancyColors = ['DarkYellow','LightOrange','Orange','DarkOrange','Red']
+//TODO: Make range of colors adaptable to occupancy (range)
+const occupancyColors = ['Gray','Yellow','Orange','Red', 'DarkRed']
 
 //GetColor functions used as proxy for setting colors
-function getColor1(value){
-  console.log(value)
-  var color = 0;
-  if(value < 9){
-    color = 0;
-  } else if (value < 30){
-    color = 3;
-  } else if (value < 60){
-    color = 4;
-  } else if (value < 90){
-    color = 1;
-  } else {
-    color = 0;
-  }
-  return occupancyColors[color];
-}
-
-function getColor2(value){
-  var color = 0;
-  if(value < 9){
-    color = 0;
-  } else if (value < 30){
-    color = 5;
-  } else if (value < 60){
-    color = 3;
-  } else if (value < 90){
-    color = 3;
-  } else {
-    color = 0;
-  }
-  return occupancyColors[color];
-}
-
-function getColor3(value){
-  var color = 0;
-  if(value < 9){
-    color = 0;
-  } else if (value < 30){
-    color = 1;
-  } else if (value < 60){
-    color = 2;
-  } else if (value < 90){
-    color = 1;
-  } else {
-    color = 0;
-  }
-  return occupancyColors[color];
-}
-
-function getColor4(value){
-  var color = 0;
-  if(value < 9){
-    color = 0;
-  } else if (value < 30){
-    color = 5;
-  } else if (value < 60){
-    color = 4;
-  } else if (value < 90){
-    color = 3;
-  } else {
-    color = 0;
-  }
-  return occupancyColors[color];
+function getColor(room, value){
+  var occupancy = jsonData["Gates"]["Floor0"][room]["occupancy"];
+  return occupancyColors[occupancy[value]];
 }
 
 const PrettoSlider = withStyles({
@@ -170,7 +110,8 @@ class Heatmap extends React.Component {
               building: "",
               floor: "",
               date: new Date(),
-              sliderValue: 12
+              sliderValue: 12,
+              mapImage: ""
           };
           this.handleBuildingChange = this.handleBuildingChange.bind(this);
           this.handleFloorChange = this.handleFloorChange.bind(this);
@@ -179,13 +120,13 @@ class Heatmap extends React.Component {
       }
 
       handleSliderChange(event){
-        console.log(parseInt(event.target.innerText))
         this.setState({
             sliderValue: parseInt(event.target.innerText),
         });
       }
 
       handleBuildingChange(event) {
+          floors = Object.keys(jsonData[event.target.value])
           const floor= this.state.floor;
           const date = this.state.date;
           this.setState({
@@ -196,12 +137,15 @@ class Heatmap extends React.Component {
       }
 
       handleFloorChange(event) {
-          const building= this.state.building;
+          const building = this.state.building;
           const date = this.state.date;
+          var image = jsonData[building][event.target.value]["PDF"].toString();
+          document.getElementById("floorLayout").src = image;
           this.setState({
               building: building,
               floor: event.target.value,
-              date: date
+              date: date,
+              mapImage: image
           });
       }
 
@@ -216,7 +160,6 @@ class Heatmap extends React.Component {
       }
 
     render() {
-      let colors=["#F0F8FF","#FFE4C4","#8A2BE2"];
         return (
           <div>
           <div>
@@ -277,19 +220,19 @@ class Heatmap extends React.Component {
                 */}
                   </div>
     <div class="map">
-    <img id="floorLayout" src='../../images/GatesBasement.png' />
+    <img id="floorLayout" src="../../images/GatesF0.png"/>
     <svg class="svgLayout" >
     <rect id="room1" height="19%" width="9%" style={{
-        fill: getColor1(this.state.sliderValue)
+        fill: getColor("Room1", this.state.sliderValue)
       }} />
     <rect id="room2" x = "26%" y = "70%" width="11.5%" height="12%"style={{
-        fill: getColor2(this.state.sliderValue)
+        fill: getColor("Room2", this.state.sliderValue)
       }}/>
     <rect id="room3" x = "50%" y = "84%" width="8%" height="12%"style={{
-        fill: getColor3(this.state.sliderValue),
+        fill: getColor("Room3", this.state.sliderValue),
       }}/>
     <rect id="room4" x = "64%" y = "2%" width="6%" height="22%"style={{
-        fill: getColor4(this.state.sliderValue),
+        fill: getColor("Room4", this.state.sliderValue),
       }}/>
     </svg>
     </div>
