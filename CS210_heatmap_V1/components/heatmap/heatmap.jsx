@@ -16,20 +16,20 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Filters from '../filters/filters.jsx';
 import '../filters/filters.css';
 import DateFnsUtils from '@date-io/date-fns';
-import '../filters/filters.css';
 
-//TODO: Import from json
+// Import from json
 import * as jsonData from "./sample_data/sample1.json";
 var buildings = Object.keys(jsonData);
 var floors = [];
-var image = "../../images/GatesF0.png"
+var default_background = "../../images/FloormapPreviewImage.png"
 
 //TODO: Make range of colors adaptable to occupancy (range)
 const occupancyColors = ['Gray','Yellow','Orange','Red', 'DarkRed']
+const elements = ['one', 'two', 'three'];
 
-//GetColor functions used as proxy for setting colors
+
 function getColor(room, value){
-  var occupancy = jsonData["Gates"]["Floor0"][room]["occupancy"];
+  var occupancy = jsonData["Gates"]["Floor0"]["Rooms"][room]["occupancy"];
   return occupancyColors[occupancy[value]];
 }
 
@@ -109,6 +109,8 @@ class Heatmap extends React.Component {
           this.state = {
               building: "",
               floor: "",
+              numRooms: 1,
+              roomData: [],
               date: new Date(),
               sliderValue: 12,
               mapImage: ""
@@ -139,12 +141,18 @@ class Heatmap extends React.Component {
       handleFloorChange(event) {
           const building = this.state.building;
           const date = this.state.date;
+          // Change background image
           var image = jsonData[building][event.target.value]["PDF"].toString();
           document.getElementById("floorLayout").src = image;
+          // Get number of rooms in floor
+          var buildings = Object.keys(jsonData);
+          var totalRooms = Object.keys(jsonData[building][event.target.value]["Rooms"]);
           this.setState({
               building: building,
               floor: event.target.value,
               date: date,
+              numRooms: totalRooms,
+              roomData: jsonData[building][event.target.value]["Rooms"],
               mapImage: image
           });
       }
@@ -158,6 +166,33 @@ class Heatmap extends React.Component {
               date: date
           });
       }
+
+      createRooms = () => {
+        let rooms = []
+        let rd = this.state.roomData
+        let numRooms = Object.keys(rd).length
+        //console.log("Creating " + numRooms + " rooms")
+
+        for (let i = 1; i <= numRooms; i++){
+          //console.log(i)
+          let id = "Room" + i;
+          //console.log(id)
+          let height = rd[id]["h"];
+          //console.log(height)
+          let width = rd[id]["w"];
+          //console.log(width)
+          let x = rd[id]["x"];
+          let y = rd[id]["y"];
+          rooms.push(
+            <rect id={id} height={height} width={width} x = {x} y={y} style={{
+                      fill: getColor(id, this.state.sliderValue)
+                    }} />
+                  );
+        };
+        //console.log(rooms);
+        return rooms;
+      }
+
 
     render() {
         return (
@@ -220,8 +255,14 @@ class Heatmap extends React.Component {
                 */}
                   </div>
     <div class="map">
-    <img id="floorLayout" src="../../images/GatesF0.png"/>
-    <svg class="svgLayout" >
+    <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>
+    <svg class="svgLayout">
+    {this.createRooms()}
+    </svg>
+    {/*
+      <rect id="room1" height="19%" width="9%" x="0" y="0" style={{
+          fill: getColor("Room1", this.state.sliderValue)
+        }} />
     <rect id="room1" height="19%" width="9%" style={{
         fill: getColor("Room1", this.state.sliderValue)
       }} />
@@ -234,7 +275,9 @@ class Heatmap extends React.Component {
     <rect id="room4" x = "64%" y = "2%" width="6%" height="22%"style={{
         fill: getColor("Room4", this.state.sliderValue),
       }}/>
-    </svg>
+    */}
+
+
     </div>
 
                 </div>
