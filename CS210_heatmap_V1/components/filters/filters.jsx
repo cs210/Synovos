@@ -24,7 +24,7 @@ class Filters extends React.Component {
         this.state = {
             building: "",
             floor: "",
-            date: new Date(),
+            date: new Date()
         };
         this.handleBuildingChange = this.handleBuildingChange.bind(this);
         this.handleFloorChange = this.handleFloorChange.bind(this);
