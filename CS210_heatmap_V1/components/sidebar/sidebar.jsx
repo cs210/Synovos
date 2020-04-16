@@ -62,6 +62,11 @@ class Sidebar extends React.Component {
                             </Button>
                         </NavLink>
                     </ListItem>
+                    <ListItem key={4} button >
+                        <NavLink to="/OnboardingFloorMap">
+                            Onboarding Floor Map
+                        </NavLink>
+                    </ListItem>
                 </List>
             </div>
         );
