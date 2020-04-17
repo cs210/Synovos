@@ -6,6 +6,7 @@ import {
 import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
+import update from 'immutability-helper'
 
 
 class URLImage extends React.Component {
@@ -65,16 +66,6 @@ class URLImage extends React.Component {
 class RoomHighlight extends React.Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      color: 'green'
-    }
-  }
-
-  handleClick = () => {
-    this.setState({
-      color: Konva.Util.getRandomColor()
-    })
   }
 
   render() {
@@ -84,8 +75,9 @@ class RoomHighlight extends React.Component {
         y={this.props.y}
         width={this.props.width}
         height={this.props.height}
-        fill={this.state.color}
-        onClick={this.handleClick}
+        fill={"black"}
+        opacity={0.25}
+        draggable={this.props.draggable}
       />
     );
   }
@@ -99,14 +91,8 @@ class FloorMap extends React.Component {
                     scaleX: window.innerWidth / 2000,
                     scaleY: window.innerHeight / 2000,
                     currentFloorMap: "https://library.truman.edu/about-us/FloorMaps/FirstFloor.jpg",
-                    highlightedRooms: [
-                      {
-                        x: 250,
-                        y: 25,
-                        width: 50,
-                        height: 100,
-                      }
-                    ]
+                    currentRoom: "Room2",
+                    highlightedRooms: [],
                  };
 
     this.stageRef = React.createRef();
@@ -115,6 +101,16 @@ class FloorMap extends React.Component {
 
     this.isDrawing = false;
   }
+
+  newRectangle = (x, y, width, height) => {
+    return {
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      key: this.state.currentRoom
+    } 
+  };
 
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
@@ -133,24 +129,17 @@ class FloorMap extends React.Component {
   }
 
   handleMouseDown = (event) => {
+
     this.isDrawing = true;
 
     var pos = this.stageRef.current.getPointerPosition();
-    this.oldX = pos.x
-    this.oldY = pos.y
+    this.originalX = pos.x
+    this.originalY = pos.y
 
-    var newRectangle = new Konva.Rect({   
-      x: this.oldX,
-      y: this.oldY,
-      width: 0,
-      height: 0,
-      fill: 'black',
-      stroke: 'black',
-      strokeWidth: 4,
-      opacity: 0.25,
-    });
-    this.layerRef.current.add(newRectangle);
-    this.rectangle = newRectangle;
+    this.setState(prevState => ({
+      highlightedRooms: [...prevState.highlightedRooms, this.newRectangle(this.originalX, this.originalY,
+                                       pos.x - this.originalX, pos.y - this.originalY) ]
+    }));
   }
 
   handleMouseUp = () => {
@@ -164,21 +153,15 @@ class FloorMap extends React.Component {
 
     var pos = this.stageRef.current.getPointerPosition();
 
-    this.rectangle.destroy()
+    this.setState((prevState) => ({
+      highlightedRooms: update(prevState.highlightedRooms, {$splice: [[-1, 1]]})
+    }))
 
-    var newRectangle = new Konva.Rect({   
-      x: this.oldX,
-      y: this.oldY,
-      width: pos.x - this.oldX,
-      height: pos.y - this.oldY,
-      fill: 'black',
-      stroke: 'black',
-      strokeWidth: 4,
-      opacity: 0.25,
-    });
-    this.layerRef.current.add(newRectangle);
-    this.rectangle = newRectangle;
-    this.layerRef.current.draw();
+    this.setState(prevState => ({
+      highlightedRooms: [...prevState.highlightedRooms, 
+                        this.newRectangle(this.originalX, this.originalY,
+                                       pos.x - this.originalX, pos.y - this.originalY) ]
+    }));
   }
 
 
@@ -202,13 +185,14 @@ class FloorMap extends React.Component {
             width={window.innerWidth}
             height={window.innerHeight} />
 
-          {this.state.highlightedRooms.map(({ height, width, x, y }, key) => (
+          {this.state.highlightedRooms.map(({ height, width, x, y , key}) => (
             <RoomHighlight
               key={key}
               height={height}
               width={width}
               x={x}
               y={y}
+              draggable={false}
             />
             ))}
         </Layer>
