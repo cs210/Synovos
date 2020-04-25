@@ -23,14 +23,21 @@ mongoose.Promise = require('bluebird');
 
 var async = require('async');
 
-mongoose.connect('mongodb://localhost/cs142project6', { useNewUrlParser: true, useUnifiedTopology: true });
+const connectionURI = 'mongodb+srv://backenduser:fXgre5eVj1R6CA76@cluster0-sh7sn.mongodb.net/test?retryWrites=true&w=majority';
+mongoose.connect(connectionURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.once('open', function(){
+    console.log("MongoDB databse connection established successfully");
+});
+db.on('error', (error) => console.log(error));
 
+;
 // Load the Mongoose schema for SchemaInfo
 var SchemaInfo = require('./schema/schemaInfo.js');
 
 var express = require('express');
 var app = express();
-
+app.use(express.json())
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
@@ -71,6 +78,15 @@ app.get('/test/info', function (request, response) {
     });
 
 });
+
+const buildingsRouter = require('./routers/buildingsRouter');
+app.use('/buildings', buildingsRouter)
+
+const sensorDataRouter = require('./routers/sensorDataRouter');
+app.use('/sensorData', sensorDataRouter)
+
+const occupancyDataRouter = require('./routers/occupancyDataRouter');
+app.use('/occupancyData', occupancyDataRouter)
 
 
 var server = app.listen(3000, function () {
