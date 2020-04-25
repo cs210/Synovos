@@ -20,7 +20,16 @@
 // We use the Mongoose to define the schema stored in MongoDB.
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost/predictivity', { useNewUrlParser: true, useUnifiedTopology: true });
+
+var async = require('async');
+
+const connectionURI = 'mongodb+srv://backenduser:fXgre5eVj1R6CA76@cluster0-sh7sn.mongodb.net/test?retryWrites=true&w=majority';
+mongoose.connect(connectionURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.once('open', function(){
+    console.log("MongoDB databse connection established successfully");
+});
+db.on('error', (error) => console.log(error));
 
 // Load the Mongoose schema for SchemaInfo, User
 var SchemaInfo = require('./schema/schemaInfo.js');
@@ -28,10 +37,10 @@ var User = require('./schema/user.js');
 
 // We use ExpressJS as a MiddleWare
 var express = require('express');
-var session = require('express-session');
-
-// Start Express
 var app = express();
+app.use(express.json())
+
+var session = require('express-session');
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
@@ -88,6 +97,15 @@ app.get('/test/info', function (request, response) {
     });
 
 });
+
+const buildingsRouter = require('./routers/buildingsRouter');
+app.use('/buildings', buildingsRouter)
+
+const sensorDataRouter = require('./routers/sensorDataRouter');
+app.use('/sensorData', sensorDataRouter)
+
+const occupancyDataRouter = require('./routers/occupancyDataRouter');
+app.use('/occupancyData', occupancyDataRouter)
 
 
 /*
