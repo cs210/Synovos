@@ -241,7 +241,7 @@ class Heatmap extends React.Component {
                         </MuiPickersUtilsProvider>
                       </div>
                     </div>
-                <div class="gradientBar">
+                <div className="gradientBar">
                 {/*
                   <table>
                     <tr>
@@ -253,9 +253,9 @@ class Heatmap extends React.Component {
                   </table>
                 */}
                   </div>
-    <div class="map">
-    <img id="floorLayout" src="../../images/FloormapPreviewImage.png" border="10"/>
-    <svg class="svgLayout">
+    <div className="map">
+    <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>
+    <svg className="svgLayout">
     {this.createRooms()}
     </svg>
     {/*
