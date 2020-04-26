@@ -101,11 +101,11 @@ const marks = [
     },
 ];
 
-
 class Heatmap extends React.Component {
       constructor(props) {
           super(props);
           this.state = {
+              data: [],
               building: "",
               floor: "",
               numRooms: 1,
@@ -242,6 +242,7 @@ class Heatmap extends React.Component {
                       </div>
                     </div>
                 <div class="gradientBar">
+
                 {/*
                   <table>
                     <tr>
