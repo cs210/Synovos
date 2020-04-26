@@ -101,11 +101,11 @@ const marks = [
     },
 ];
 
-
 class Heatmap extends React.Component {
       constructor(props) {
           super(props);
           this.state = {
+              data: [],
               building: "",
               floor: "",
               numRooms: 1,
@@ -241,7 +241,8 @@ class Heatmap extends React.Component {
                         </MuiPickersUtilsProvider>
                       </div>
                     </div>
-                <div className="gradientBar">
+                <div class="gradientBar">
+
                 {/*
                   <table>
                     <tr>
@@ -253,9 +254,9 @@ class Heatmap extends React.Component {
                   </table>
                 */}
                   </div>
-    <div className="map">
-    <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>
-    <svg className="svgLayout">
+    <div class="map">
+    <img id="floorLayout" src="../../images/FloormapPreviewImage.png" border="10"/>
+    <svg class="svgLayout">
     {this.createRooms()}
     </svg>
     {/*

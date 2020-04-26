@@ -7,16 +7,15 @@
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-mongoose.connect('mongodb://localhost/predictivity', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost/cs142project6', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Load the Mongoose
 var SchemaInfo = require('./schema/schemaInfo.js');
-var User = require('./schema/user.js');
 
 var versionString = '1.0';
 
 // We start by removing anything that existing in the collections.
-var removePromises = [SchemaInfo.deleteMany({}), User.deleteMany({})];
+var removePromises = [SchemaInfo.deleteMany({})];
 
 Promise.all(removePromises).then(function () {
 
