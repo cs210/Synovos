@@ -24,8 +24,7 @@ var floors = [];
 var default_background = "../../images/FloormapPreviewImage.png"
 
 //TODO: Make range of colors adaptable to occupancy (range)
-const occupancyColors = ['Gray','Yellow','Orange','Red', 'DarkRed']
-const elements = ['one', 'two', 'three'];
+const occupancyColors = ['Gray','Yellow','Orange','Red', 'DarkRed'];
 
 
 function getColor(room, value){
@@ -112,7 +111,7 @@ class Heatmap extends React.Component {
               numRooms: 1,
               roomData: [],
               date: new Date(),
-              sliderValue: 12,
+              sliderValue: 48,
               mapImage: ""
           };
           this.handleBuildingChange = this.handleBuildingChange.bind(this);
@@ -255,7 +254,7 @@ class Heatmap extends React.Component {
                 */}
                   </div>
     <div class="map">
-    <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>
+    <img id="floorLayout" src="../../images/FloormapPreviewImage.png" border="10"/>
     <svg class="svgLayout">
     {this.createRooms()}
     </svg>

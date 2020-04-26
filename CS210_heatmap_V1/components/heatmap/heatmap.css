@@ -4,8 +4,9 @@
   margin-right: auto;
   max-width: 80%;
   min-width: 20%;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   position: relative;
+  border: 10px;
 }
 
 
@@ -15,8 +16,9 @@
   margin-right: auto;
   max-width: 80%;
   min-width: 20%;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   position: relative;
+  border: 10px;
 }
 
 .dummyContainer{

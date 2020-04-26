@@ -1,0 +1,90 @@
+{
+  "Buildings":{
+    "Building 1": {
+        "Floors":{
+          "Floor 1": {
+            "img_link": "../../images/Building_1/Floor_1.png"
+            "width": "100px",
+            "height": "300px",
+            "Rooms": {
+              "Room 1": {
+                "x_pos": "10%",
+                "y_pos": "15%",
+                "width": "12%",
+                "height": "10%"
+              },
+              "Room 1": {
+                "x_pos": "30%",
+                "y_pos": "45%",
+                "width": "20%",
+                "height": "10%"
+              }
+            }
+          },
+          "Floor 2": {
+            "img_link": "../../images/Building_1/Floor_2.png"
+            "width": "200px",
+            "height": "400px",
+            "Rooms": {
+              "Room 1": {
+                "x_pos": "10%",
+                "y_pos": "15%",
+                "width": "12%",
+                "height": "10%"
+              },
+              "Room 1": {
+                "x_pos": "30%",
+                "y_pos": "45%",
+                "width": "20%",
+                "height": "10%"
+              }
+            }
+          },
+        }
+      },
+      "Building 2": {
+          "Floors":{
+            "Floor 1": {
+              "img_link": "../../images/Building_2/Floor_1.png"
+              "width": "100px",
+              "height": "300px",
+              "Rooms": {
+                "Room 1": {
+                  "x_pos": "10%",
+                  "y_pos": "15%",
+                  "width": "12%",
+                  "height": "10%"
+                },
+                "Room 1": {
+                  "x_pos": "30%",
+                  "y_pos": "45%",
+                  "width": "20%",
+                  "height": "10%"
+                }
+              }
+            },
+            "Floor 2": {
+              "img_link": "../../images/Building_2/Floor_2.png"
+              "width": "200px",
+              "height": "400px",
+              "Rooms": {
+                "Room 1": {
+                  "x_pos": "10%",
+                  "y_pos": "15%",
+                  "width": "12%",
+                  "height": "10%"
+                },
+                "Room 1": {
+                  "x_pos": "30%",
+                  "y_pos": "45%",
+                  "width": "20%",
+                  "height": "10%"
+                }
+              }
+            },
+          }
+        },
+      }
+    }
+  }
+}
