@@ -37,7 +37,7 @@ class Register extends React.Component {
             console.log("Passwords don't match.");
         } else{
             var executeRegister = axios.post(
-                "/user",
+                "/admin/create",
                 {
                     login_name: this.state.login_name,
                     first_name: this.state.first_name,
