@@ -51,8 +51,8 @@ class URLImage extends React.Component {
       <Image
         x={this.props.x}
         y={this.props.y}
-        width={this.props.width}
-        height={this.props.height}
+        width={1000}
+        height={600}
         image={this.state.image}
         ref={node => {
           this.imageNode = node;
@@ -90,8 +90,6 @@ class FloorMap extends React.Component {
     this.state = { 
                     scaleX: window.innerWidth / 2000,
                     scaleY: window.innerHeight / 2000,
-                    currentFloorMap: "https://library.truman.edu/about-us/FloorMaps/FirstFloor.jpg",
-                    currentRoom: "Room2",
                     highlightedRooms: [],
                  };
 
@@ -108,7 +106,7 @@ class FloorMap extends React.Component {
       y: y,
       width: width,
       height: height,
-      key: this.state.currentRoom
+      key: this.props.currentRoom,
     } 
   };
 
@@ -142,11 +140,12 @@ class FloorMap extends React.Component {
     }));
   }
 
-  handleMouseUp = () => {
+  handleMouseUp = (event) => {
     this.isDrawing = false;
+    this.props.onRoomSelectFinish(event)
   }
 
-  handleMouseMove = () => {
+  handleMouseMove = (event) => {
     if (!this.isDrawing) {
         return;
     }
@@ -179,11 +178,11 @@ class FloorMap extends React.Component {
       >
         <Layer ref={this.layerRef}>
           <URLImage
-            src={this.state.currentFloorMap}
+            src={this.props.currentFloorMap}
             x={0}
             y={0}
-            width={window.innerWidth}
-            height={window.innerHeight} />
+            width={this.stageRef.width}
+            height={this.stageRef.height} />
 
           {this.state.highlightedRooms.map(({ height, width, x, y , key}) => (
             <RoomHighlight
