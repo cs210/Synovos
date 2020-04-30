@@ -17,6 +17,8 @@
  * /user
  */
 
+const PORT = process.env.HTTP_PORT || 8081;
+
 // We use the Mongoose to define the schema stored in MongoDB.
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -64,7 +66,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 app.get('/', function (request, response) {
-    response.send('Simple web server of files from ' + __dirname);
+    response.send('flowers smell nice');
 });
 
 /*
@@ -234,4 +236,8 @@ app.post('/user', function(request, response){
             return;
         });
     });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server listening at port ${PORT}.`);
 });
