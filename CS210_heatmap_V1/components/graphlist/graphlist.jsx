@@ -103,7 +103,7 @@ class GraphList extends React.Component {
         const GraphTable = withStyles(styles.ExpandedGraphTable)(Table);
         const tickFormatter = (tick) => moment(tick).format('HH:mm');
         return (
-            <React.Fragment>
+            <div className='graphlist-main'>
                 <div className="graphlist-div">
                     <RowTable
                         stickyHeader
@@ -170,7 +170,7 @@ class GraphList extends React.Component {
                                                                         <CartesianGrid strokeDasharray="3 3" />
                                                                         <Tooltip labelFormatter = {tickFormatter}/>
                                                                         <Line type='Monotone' dataKey="data"/>
-                                                                    </LineChart> : <Typography align={'center'} variant={'body'}>Data not available for this date</Typography>
+                                                                    </LineChart> : <Typography align={'center'} variant={'body1'}>Data not available for this date</Typography>
                                                             }
                                                         </ResponsiveContainer>
                                                     </TableCell>
@@ -222,7 +222,7 @@ class GraphList extends React.Component {
                                                     <CartesianGrid strokeDasharray="3 3" />
                                                     <Tooltip labelFormatter = {tickFormatter}/>
                                                     <Line type='Monotone' dataKey="data"/>
-                                                </LineChart> : <Typography align={'center'} variant={'body'}>Data not available for this date</Typography>
+                                                </LineChart> : <Typography align={'center'} variant={'body1'}>Data not available for this date</Typography>
                                         }
                                     </ResponsiveContainer>
                                 </TableCell>
@@ -230,9 +230,9 @@ class GraphList extends React.Component {
                         </TableBody>
                     </GraphTable>
                     }
-                    {!this.props.data && <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>}
                 </div>
-            </React.Fragment>
+                {!this.props.data && <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>}
+            </div>
         );
     }
 }
