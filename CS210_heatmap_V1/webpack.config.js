@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    index: './index.jsx',
+    index: './public/index.jsx',
   },
   module: {
     rules: [
