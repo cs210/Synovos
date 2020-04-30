@@ -65,7 +65,7 @@ var bodyParser = require('body-parser');
 // Use bodyParser for JSON
 //app.use(bodyParser.json());
 app.use(express.static(__dirname));
-
+app.set('view engine', 'jade')
 
 app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
