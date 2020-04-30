@@ -2,8 +2,9 @@
   "name": "project6",
   "version": "1.0.0",
   "description": "CS142 Project #6 - Appserver and Database (React)",
-  "main": "webServer.js",
+  "main": "index.html",
   "scripts": {
+    "start": "npm start",
     "build": "node_modules/.bin/webpack -d",
     "build:w": "node_modules/.bin/webpack -d --watch",
     "lint": "node_modules/.bin/eslint webServer.js loadDatabase.js *.jsx components/*/*.jsx lib/*.js"

@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    index: './index.jsx',
+    index: './src/index.jsx',
   },
   module: {
     rules: [
@@ -30,7 +30,7 @@ module.exports = {
     extensions: ['*', '.js', '.jsx'],
   },
   output: {
-    path: `${__dirname}/compiled`,
+    path: `${__dirname}`,
     publicPath: '/',
     filename: '[name].bundle.js',
   },
