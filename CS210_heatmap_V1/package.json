@@ -2,7 +2,7 @@
   "name": "project6",
   "version": "1.0.0",
   "description": "CS142 Project #6 - Appserver and Database (React)",
-  "main": "index.html",
+  "main": "public/index.html",
   "scripts": {
     "start": "npm start",
     "build": "node_modules/.bin/webpack -d",
