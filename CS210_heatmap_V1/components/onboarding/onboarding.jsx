@@ -6,7 +6,8 @@ import {
     Grid
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import OnboardingFloorMap from './onboardingFloorMap'
+import OnboardingFloorMap from './onboardingFloorMap';
+import axios from "axios";
 
 class Onboarding extends React.Component {
   constructor(props) {
@@ -83,20 +84,74 @@ class Onboarding extends React.Component {
         }
       }
     }
-    console.log(this.state.jsonData);
     this.setState({jsonData: this.state.jsonData});
     this.updateOptions();
   }
 
-  handleFinished = () => {
+  handleFinishedWithJsonPart = () => {
     this.setState({showFloorMapOnboarding: true});
+  }
+
+  handleFinishedWithAllOnboarding = (event) => {
+    console.log(this.state.jsonData)
+    for (const building in this.state.jsonData) {
+      let buildingPayload = {
+        "name": building,
+        "floors": [],
+      }
+      for (const floor in this.state.jsonData[building]) {
+        let floorPayload = {
+          "name": floor,
+          "img_url": this.state.jsonData[building][floor].img_url,
+          "rooms": [],
+        }
+        for (const room in this.state.jsonData[building][floor]) {
+          let roomPayload = {
+            "name": room,
+            "sensors": [],
+          }
+          for (const sensor in this.state.jsonData[building][floor][room]) {
+            let sensorPayload = {
+              "sensorType": sensor,
+            }
+            roomPayload["sensors"].push(sensorPayload)
+          }
+          floorPayload["rooms"].push(roomPayload)
+        }
+        buildingPayload["floors"].push(floorPayload)
+      }
+      let buildingUploadResponse = axios.post(
+        "/buildings/", buildingPayload,
+        { withCredentials: true });
+    }
+    // TODO: Upload the room position
+  }
+
+  handleFloorMapUpload = (building, floor, floorMapUrl) => {
+    this.setState(prevState => ({
+      ...prevState,
+      jsonData: {
+        ...prevState.jsonData,
+        [building]: {
+          ...prevState.jsonData[building],
+          [floor]: {
+            ...prevState.jsonData[building][floor],
+            img_url: floorMapUrl,
+          }
+        }
+      }
+    }))
   }
 
   render() {
     return (
       <React.Fragment>
         { this.state.showFloorMapOnboarding ?
-          <OnboardingFloorMap json={this.state.jsonData}/>
+          <OnboardingFloorMap 
+            json={this.state.jsonData}
+            onFloorMapUpload={this.handleFloorMapUpload}
+            onFinishOnboarding={this.handleFinishedWithAllOnboarding}
+          />
         :
         <Grid container justify="center" alignItems="center" direction="column" spacing={5}>
         <Grid item>
@@ -147,7 +202,7 @@ class Onboarding extends React.Component {
         </form>
         </Grid>
         <Grid item>
-        <Button variant="contained" color="primary" onClick={this.handleFinished}>Finished</Button>
+        <Button variant="contained" color="primary" onClick={this.handleFinishedWithJsonPart}>Finished</Button>
         </Grid>
         <Grid item>
         <Typography>

@@ -41,8 +41,9 @@ const floorSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    pdf_id: {
-        type: mongoose.Schema.Types.ObjectID,
+    img_url: {
+        type: String,
+        required: true,
     },
     rooms: [roomSchema]
 })
