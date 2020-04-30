@@ -1,0 +1,22 @@
+{
+  "Sensors":{
+    "sensor 1": {
+      "location": {
+        "building": "Building 2",
+        "floor": "Floor 1",
+        "room": "Room 3"
+      },
+      "interval": "15 mins",
+      "data": [0, 1, ..., 0]
+    },
+    "sensor 2": {
+      "location": {
+        "building": "Building 1",
+        "floor": "Floor 3",
+        "room": "Room 3"
+      },
+      "interval": "1 hr",
+      "data": [0, ..., 0]
+    }
+  }
+}

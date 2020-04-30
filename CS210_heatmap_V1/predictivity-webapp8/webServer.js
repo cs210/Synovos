@@ -44,7 +44,7 @@ var session = require('express-session');
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
-//app.use(express.static(__dirname));
+app.use(express.static(__dirname));
 
 // Import functions from hashpasswords.js to hash passwords
 var encryption = require('./modelData/hashpasswords.js');
@@ -235,3 +235,12 @@ app.post('/user', function(request, response){
         });
     });
 });
+
+
+
+var server = app.listen(3000, function () {
+    var port = server.address().port;
+    console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
+});
+
+
