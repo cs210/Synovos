@@ -70,6 +70,7 @@ app.set('view engine', 'jade')
 app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
 });
+//app.use('/static', express.static(__dirname + 'public/index.html'))
 
 //app.get('/', function (req, res) {
 //  res.render(../public/index.html, {});
