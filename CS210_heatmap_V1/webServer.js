@@ -36,6 +36,7 @@ db.on('error', (error) => console.log(error));
 // We use ExpressJS as a MiddleWare
 var express = require('express');
 var app = express();
+app.use(express.json());
 
 var session = require('express-session');
 
@@ -53,12 +54,14 @@ app.use(session({
 // Node.js body parsing middleware.
 // Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
 var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 
 // Use bodyParser for JSON
 //app.use(bodyParser.json());
 //app.use(express.static('public'));
 //app.use('/',express.static(__dirname + 'public/'));
-app.set('view engine', 'jade')
+app.set('view engine', 'jade');
 
 app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
@@ -108,6 +111,9 @@ app.use('/sensorData', sensorDataRouter);
 
 const occupancyDataRouter = require('./routers/occupancyDataRouter');
 app.use('/occupancyData', occupancyDataRouter);
+
+const adminControls = require('./routers/adminControls');
+app.use('/admin', adminControls);
 
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}.`);
