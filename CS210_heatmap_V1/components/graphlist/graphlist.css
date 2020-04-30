@@ -7,11 +7,18 @@
 }
 
 .graphlist-div{
+    flex-wrap: nowrap;
     width: 100%;
+    box-sizing: border-box;
     display: inline-flex;
-    flex-wrap: wrap;
 }
 
 .expandedCell{
     height: 400px;
+}
+
+.graphlist-main{
+    flex-wrap: wrap;
+    display: inline-flex;
+    width: 100%;
 }

@@ -104,9 +104,9 @@ class Index extends React.Component {
                                     {
                                         this.state.loggedInStatus ?
                                             [
-                                                <Redirect key={1} exact path="/login" to={"/Heatmap"} />,
-                                                <Redirect key={2} exact path="/register" to={"/Heatmap"} />,
-                                                <Redirect key={3} exact path="/" to={"/Heatmap"} />,
+                                                <Redirect key={1} exact path="/login" to={"/Onboarding"} />,
+                                                <Redirect key={2} exact path="/register" to={"/Onboarding"} />,
+                                                <Redirect key={3} exact path="/" to={"/Onboarding"} />,
                                                 <Route key={4} exact path="/Heatmap">
                                                     <Heatmap></Heatmap>
                                                 </Route>,
