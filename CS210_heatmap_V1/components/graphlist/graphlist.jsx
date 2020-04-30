@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Button,
+    Typography,
     Table,
     TableHead,
     TableRow,
@@ -19,6 +19,7 @@ import {
 import './graphlist.css';
 import { withStyles } from '@material-ui/core/styles';
 import data from '../../data/predictivityData.json';
+var moment = require('moment');
 
 const columns = [
     {id: 'room', label: 'room', minWidth: 170, width: "30%"},
@@ -45,6 +46,7 @@ const styles = {
     },
 };
 
+
 const GRAPH_HEIGHT = 100;
 const ROOM_PADDING = 16;
 const ROOM_HEIGHT = GRAPH_HEIGHT - 2 * ROOM_PADDING;
@@ -58,8 +60,16 @@ class GraphList extends React.Component {
             SelectedRow: -1,
         }
         this.data = this.loadData(data);
-        console.log(this.data);
         this.handleRowClick = this.handleRowClick.bind(this);
+    }
+
+    componentDidUpdate(prevProps){
+        if(this.props.data !== prevProps.data){
+            this.setState({
+                SelectedRow: -1,
+                ExpandedGraphView: false,
+            });
+        }
     }
 
     loadData(json){
@@ -91,6 +101,7 @@ class GraphList extends React.Component {
     render() {
         const RowTable = withStyles(this.state.ExpandedGraphView ? styles.RowGraphTable.expandedGraph : styles.RowGraphTable.rowGraph)(Table);
         const GraphTable = withStyles(styles.ExpandedGraphTable)(Table);
+        const tickFormatter = (tick) => moment(tick).format('HH:mm');
         return (
             <React.Fragment>
                 <div className="graphlist-div">
@@ -118,7 +129,7 @@ class GraphList extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.data.map((room, index) => (
+                            {this.props.data && this.props.data.map((room, index) => (
                                 <TableRow hover
                                           role="checkbox" tabIndex={index}
                                           key={index}
@@ -134,7 +145,7 @@ class GraphList extends React.Component {
                                                         style={{minWidth: column.minWidth, width: column.width, height: ROOM_HEIGHT, padding: ROOM_PADDING}}
                                                         tabIndex={index}
                                                     >
-                                                        {room[0]}
+                                                        {room.name}
                                                     </TableCell>);
                                             case 'occupancy':
                                                 return(
@@ -145,13 +156,22 @@ class GraphList extends React.Component {
                                                         tabIndex={index}
                                                     >
                                                         <ResponsiveContainer width="100%" height={GRAPH_HEIGHT}>
-                                                            <LineChart data={room[1]}>
-                                                                <XAxis dataKey="time" />
-                                                                <YAxis dataKey="occupancy"/>
-                                                                <CartesianGrid strokeDasharray="3 3" />
-                                                                <Tooltip />
-                                                                <Line type='Monotone' dataKey="occupancy"/>
-                                                            </LineChart>
+                                                            {
+                                                                room.data !== undefined ?
+                                                                    <LineChart data={room.data}>
+                                                                        <XAxis
+                                                                            dataKey="time"
+                                                                            scale='time'
+                                                                            type='number'
+                                                                            domain={['dataMin', 'dataMax']}
+                                                                            tickFormatter={tickFormatter}
+                                                                        />
+                                                                        <YAxis dataKey="data"/>
+                                                                        <CartesianGrid strokeDasharray="3 3" />
+                                                                        <Tooltip labelFormatter = {tickFormatter}/>
+                                                                        <Line type='Monotone' dataKey="data"/>
+                                                                    </LineChart> : <Typography align={'center'} variant={'body'}>Data not available for this date</Typography>
+                                                            }
                                                         </ResponsiveContainer>
                                                     </TableCell>
                                                 );
@@ -161,7 +181,7 @@ class GraphList extends React.Component {
                             ))}
                         </TableBody>
                     </RowTable>
-                    {this.state.ExpandedGraphView &&
+                    {this.props.data && this.state.ExpandedGraphView &&
                     <GraphTable
                         stickyHeader
                         aria-label="sticky table"
@@ -188,19 +208,29 @@ class GraphList extends React.Component {
                                     }}
                                 >
                                     <ResponsiveContainer width="100%" height={500}>
-                                        <LineChart data={this.data[this.state.SelectedRow][1]}>
-                                            <XAxis dataKey="time" />
-                                            <YAxis dataKey="occupancy"/>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <Tooltip />
-                                            <Line type='Monotone' dataKey="occupancy"/>
-                                        </LineChart>
+                                        {
+                                            this.props.data[this.state.SelectedRow].data !== undefined ?
+                                                <LineChart data={this.props.data[this.state.SelectedRow].data}>
+                                                    <XAxis
+                                                        dataKey="time"
+                                                        scale='time'
+                                                        type='number'
+                                                        domain={['dataMin', 'dataMax']}
+                                                        tickFormatter={tickFormatter}
+                                                    />
+                                                    <YAxis dataKey="data"/>
+                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                    <Tooltip labelFormatter = {tickFormatter}/>
+                                                    <Line type='Monotone' dataKey="data"/>
+                                                </LineChart> : <Typography align={'center'} variant={'body'}>Data not available for this date</Typography>
+                                        }
                                     </ResponsiveContainer>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
                     </GraphTable>
                     }
+                    {!this.props.data && <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>}
                 </div>
             </React.Fragment>
         );

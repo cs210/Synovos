@@ -10,69 +10,44 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import PropTypes from 'prop-types';
 
 import './filters.css';
-
-const buildings = ["Gates", "Huang"];
-
-const floors = ["1st Floor", "2nd floor", "3rd floor"];
 
 class Filters extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            building: "",
-            floor: "",
-            date: new Date()
-        };
-        this.handleBuildingChange = this.handleBuildingChange.bind(this);
-        this.handleFloorChange = this.handleFloorChange.bind(this);
-        this.handleDateChange = this.handleDateChange.bind(this);
-    }
-
-    handleBuildingChange(event) {
-        this.setState({
-            building: event.target.value,
-        });
-    }
-
-    handleFloorChange(event) {
-        this.setState({
-            floor: event.target.value,
-        });
-    }
-
-    handleDateChange(date) {
-        this.setState({
-            date: date
-        });
     }
 
     render() {
         return (
             <div className="filters">
                 <div className="filter">
-                    <FormControl className="filters-formControls">
+                    <FormControl
+                        className="filters-formControls"
+                        disabled = {this.props.buildings.length === 0} >
                         <InputLabel id = "buildingFilter">Building</InputLabel>
                         <Select
                             labelId = "buildingFilter"
-                            value={this.state.building}
-                            onChange={this.handleBuildingChange}
+                            value={this.props.building}
+                            onChange={this.props.handleBuildingChange}
                         >
-                            {buildings.map((building, index)=> <MenuItem key = {index} value={building}>{building}</MenuItem>)}
+                            {this.props.buildings.map((building)=> <MenuItem key = {building._id} value={building}>{building.name}</MenuItem>)}
                         </Select>
                     </FormControl>
                 </div>
                 <div className="filter">
-                    <FormControl className="filters-formControls">
+                    <FormControl
+                        className="filters-formControls"
+                        disabled = {this.props.floors.length === 0} >
                         <InputLabel id = "floorFilter">Floor</InputLabel>
                         <Select
                             labelId = "floorFilter"
-                            value={this.state.floor}
-                            onChange={this.handleFloorChange}
+                            value={this.props.floor}
+                            onChange={this.props.handleFloorChange}
                         >
-                            {floors.map((floor, index)=> <MenuItem key = {index} value={floor}>{floor}</MenuItem>)}
+                            {this.props.floors.map((floor, index)=> <MenuItem key = {floor._id} value={floor}>{floor.name}</MenuItem>)}
                         </Select>
                     </FormControl>
                 </div>
@@ -83,11 +58,11 @@ class Filters extends React.Component {
                         variant="inline"
                         format="MM/dd/yyyy"
                         margin="normal"
-                        value={this.state.date}
+                        value={this.props.date}
                         KeyboardButtonProps={{
                             'aria-label': 'change date',
                         }}
-                        onChange = {this.handleDateChange}
+                        onChange = {this.props.handleDateChange}
                         disableFuture = {true}
                         />
                     </MuiPickersUtilsProvider>
@@ -95,6 +70,23 @@ class Filters extends React.Component {
             </div>
         );
     }
+}
+
+Filters.defaultProps = {
+    buildings: [],
+    floors: [],
+    date: new Date()
+}
+
+Filters.propTypes ={
+    buildings: PropTypes.arrayOf(PropTypes.object),
+    floors: PropTypes.arrayOf(PropTypes.object),
+    floor: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    building: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    date: PropTypes.object,
+    handleBuildingChange: PropTypes.func,
+    handleDateChange: PropTypes.func,
+    handleFloorChange: PropTypes.func
 }
 
 export default Filters;

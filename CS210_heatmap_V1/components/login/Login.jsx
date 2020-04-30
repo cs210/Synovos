@@ -42,8 +42,6 @@ class Login extends React.Component {
             if (response.data) {
                 //console.log(this.props.handleLogin);
                 this.props.handleLogin(response.data);
-                var updateActivities = axios.post("/addActivity", {user_id: response.data._id, file_name: "avatar.jpg", activity: " logged in."}, { withCredentials: true });
-                updateActivities.catch(error => console.log("error", error));
             }
             else{
                 console.log("FAILED");

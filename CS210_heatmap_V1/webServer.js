@@ -33,10 +33,6 @@ db.once('open', function(){
 });
 db.on('error', (error) => console.log(error));
 
-// Load the Mongoose schema for SchemaInfo, User
-var SchemaInfo = require('./schema/schemaInfo.js');
-var User = require('./schema/user.js');
-
 // We use ExpressJS as a MiddleWare
 var express = require('express');
 var app = express();
@@ -46,9 +42,6 @@ var session = require('express-session');
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
 app.use(express.static(__dirname));
-
-// Import functions from hashpasswords.js to hash passwords
-var encryption = require('./modelData/hashpasswords.js');
 
 // ExpressJS has a middleware layer for dealing with the session state
 app.use(session({
@@ -108,142 +101,13 @@ app.get('/test/info', function (request, response) {
 });
 
 const buildingsRouter = require('./routers/buildingsRouter');
-app.use('/buildings', buildingsRouter)
+app.use('/buildings', buildingsRouter);
 
 const sensorDataRouter = require('./routers/sensorDataRouter');
-app.use('/sensorData', sensorDataRouter)
+app.use('/sensorData', sensorDataRouter);
 
 const occupancyDataRouter = require('./routers/occupancyDataRouter');
-app.use('/occupancyData', occupancyDataRouter)
-
-
-/*
- * /admin/login - Change the login state
- * Find user in database and create session in the backend with (request.session)
- */
-app.post('/admin/login', function (request, response) {
-    User.findOne({login_name: request.body.login_name} , function (err, info) {
-        if (err) {
-            console.error('Doing /admin/login with error: ', err);
-            response.status(500).send(JSON.stringify(err));
-            return;
-        }
-        if (!info) {
-            console.log('Login name ' + request.body.login_name + ' not found.');
-            response.status(400).send('Not found');
-            return;
-        }
-
-        if (encryption.doesPasswordMatch(info.password_digest, info.salt, request.body.password) === false) {
-            console.log('Wrong password.');
-            response.status(400).send('Passwords dont match!');
-            return;
-        }
-
-        // Storing login name & user id in the session that is only available in the backend
-        request.session.login_name = request.body.login_name;
-        request.session.user_id = info._id;
-        response.status(200).send(info);
-    });
-});
-
-
-/*
- * URL /admin/logout - Change the login state to logout and destroy all session
- */
-app.post('/admin/logout', function(request, response){
-    // Check if there is a session -- User logged in
-    if (!request.session.login_name){
-        console.log('User not logged in');
-        response.status(401).send('Unauthorized');
-        return;
-    }
-
-    // Remove references with “delete”, then call request.session.destroy(callback)
-    delete request.session.login_name;
-    delete request.session.user_id;
-
-    request.session.destroy(function(err) {
-        if(err){
-            console.log('Doing /admin/logout with error:', err);
-            response.status(500).send(JSON.stringify(err));
-            return;
-        }
-        response.status(200).send("Session Deleted, User Logout completed");
-    });
-});
-
-/*
- * URL /user - Create a new User
- */
-app.post('/user', function(request, response){
-    // Check if login_name exists
-    if(!request.body.login_name){
-        console.log('Login name required');
-        response.status(400).send('Login name required');
-        return;
-    }
-
-    // Try to find login_name. If it already exists, throw an error.
-    User.findOne({login_name: request.body.login_name} , function (err, info) {
-        if (err) {
-            // Query returned an error.  We pass it back to the browser with an Internal Service
-            // Error (500) error code.
-            console.error('Doing /user with error: ', err);
-            response.status(500).send(JSON.stringify(err));
-            return;
-        }
-
-        if(info){
-            console.log('Login name ' + request.body.login_name + ' not found.');
-            response.status(400).send('Login name not found');
-            return;
-        }
-
-        // only if user with specified login_name not found, create a new user
-        if(!request.body.password){
-            console.log('Password required');
-            response.status(400).send('Password not found');
-            return;
-        }
-        if(!request.body.first_name){
-            console.log('First name required');
-            response.status(400).send('First name not found');
-            return;
-        }
-        if(!request.body.last_name){
-            console.log('Last name required');
-            response.status(400).send('Last name not found');
-            return;
-        }
-
-        // Create passwords
-        var passwordEntry = encryption.makePasswordEntry(request.body.password);
-
-        // create user
-        User.create({
-            login_name: request.body.login_name,
-            first_name: request.body.first_name,
-            last_name: request.body.last_name,
-            password_digest: passwordEntry.hash,
-            salt: passwordEntry.salt,
-        }).then( function (userObj) {
-            userObj.save();
-            console.log('Adding User:', userObj.login_name, ' of user ID ', userObj._id);
-
-            request.session.login_name = userObj.login_name;
-            request.session.user_id = userObj._id;
-
-            response.status(200).send(userObj);
-            return;
-
-        }).catch(function (err){
-            console.error('Error create User', err);
-            response.status(400).send(JSON.stringify(err));
-            return;
-        });
-    });
-});
+app.use('/occupancyData', occupancyDataRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}.`);

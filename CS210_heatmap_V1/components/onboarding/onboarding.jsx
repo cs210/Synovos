@@ -1,13 +1,18 @@
 import React from 'react';
 import {
     Typography,
-    TextField
+    TextField,
+    Button,
+    Grid
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
+import OnboardingFloorMap from './onboardingFloorMap'
 
 class Onboarding extends React.Component {
   constructor(props) {
+    /*
+    TODO: Should probably check that at least one sensor was added to the json
+    */
     super(props);
     this.state = {buildingName: '',
                   floorName: '',
@@ -18,6 +23,7 @@ class Onboarding extends React.Component {
                   floorOptions: [],
                   roomOptions: [],
                   sensorOptions: [],
+                  showFloorMapOnboarding: false,
                  };
 
     this.handleBuildingChange = this.handleBuildingChange.bind(this);
@@ -82,57 +88,75 @@ class Onboarding extends React.Component {
     this.updateOptions();
   }
 
+  handleFinished = () => {
+    this.setState({showFloorMapOnboarding: true});
+  }
+
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <div style={{ width: 300 }}>
-        <Autocomplete
-          freeSolo
-          options={this.state.buildingOptions}
-          renderInput={params => (
-            <TextField {...params} label="Building" margin="normal" variant="outlined" />
-          )}
-          onInputChange={this.handleBuildingChange}
-          value={this.state.buildingName}
-        />
-        </div>
-        <div style={{ width: 300 }}>
-        <Autocomplete
-          freeSolo
-          options={this.state.floorOptions}
-          renderInput={params => (
-            <TextField {...params} label="Floor" margin="normal" variant="outlined" />
-          )}
-          onInputChange={this.handleFloorChange}
-          value={this.state.floorName}
-        />
-        </div>
-        <div style={{ width: 300 }}>
-        <Autocomplete
-          freeSolo
-          options={this.state.roomOptions}
-          renderInput={params => (
-            <TextField {...params} label="Room" margin="normal" variant="outlined" />
-          )}
-          onInputChange={this.handleRoomChange}
-          value={this.state.roomName}
-        />
-        </div>
-        <div style={{ width: 300 }}>
-        <Autocomplete
-          freeSolo
-          options={this.state.sensorOptions}
-          renderInput={params => (
-            <TextField {...params} label="Sensor" margin="normal" variant="outlined" />
-          )}
-          onInputChange={this.handleSensorChange}
-          value={this.state.sensorName}
-        />
-        </div>
-        <input type="submit" value="Submit" />
-        <div> {JSON.stringify(this.state.jsonData)}
-        </div>
-      </form>
+      <React.Fragment>
+        { this.state.showFloorMapOnboarding ?
+          <OnboardingFloorMap json={this.state.jsonData}/>
+        :
+        <Grid container justify="center" alignItems="center" direction="column" spacing={5}>
+        <Grid item>
+        <form onSubmit={this.handleSubmit}>
+          <Autocomplete
+            freeSolo
+            options={this.state.buildingOptions}
+            renderInput={params => (
+              <TextField {...params} label="Building" margin="normal" variant="outlined"/>
+            )}
+            onInputChange={this.handleBuildingChange}
+            value={this.state.buildingName}
+            style = {{width: 300}}
+          />
+          <Autocomplete
+            freeSolo
+            options={this.state.floorOptions}
+            renderInput={params => (
+              <TextField {...params} label="Floor" margin="normal" variant="outlined"/>
+            )}
+            onInputChange={this.handleFloorChange}
+            value={this.state.floorName}
+            style = {{width: 300}}
+          />
+          <Autocomplete
+            freeSolo
+            options={this.state.roomOptions}
+            renderInput={params => (
+              <TextField {...params} label="Room" margin="normal" variant="outlined" />
+            )}
+            onInputChange={this.handleRoomChange}
+            value={this.state.roomName}
+            style = {{width: 300}}
+          />
+          <Autocomplete
+            freeSolo
+            options={this.state.sensorOptions}
+            renderInput={params => (
+              <TextField {...params} label="Sensor" margin="normal" variant="outlined" />
+            )}
+            onInputChange={this.handleSensorChange}
+            value={this.state.sensorName}
+            style = {{width: 300}}
+          />
+          <div align="center">
+            <Button variant="contained" type="submit" value="Submit">Add Sensor</Button>
+          </div>
+        </form>
+        </Grid>
+        <Grid item>
+        <Button variant="contained" color="primary" onClick={this.handleFinished}>Finished</Button>
+        </Grid>
+        <Grid item>
+        <Typography>
+          {JSON.stringify(this.state.jsonData)}
+        </Typography>
+        </Grid>
+        </Grid>
+        }
+      </React.Fragment>
     );
   }
 }

@@ -10,17 +10,7 @@ class TopBar extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            info: {},
         };
-    }
-
-    componentDidMount() {
-        var url = axios.get("/test/info");
-        url.then(response => {
-            this.setState({
-                info: response.data,
-            });
-        }).catch(error => console.log("error", error));
     }
 
     handleLogoutClick() {
@@ -60,7 +50,7 @@ class TopBar extends React.Component {
                 <Toolbar>
                     <section>
                         <Typography variant="h5" color="inherit">
-                            {"Predictivity - Version " + this.state.info.__v}
+                            {"Predictivity"}
                         </Typography>
                     </section>
                     <section className="app-bar-right">
