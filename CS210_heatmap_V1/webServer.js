@@ -40,13 +40,12 @@ var User = require('./schema/user.js');
 // We use ExpressJS as a MiddleWare
 var express = require('express');
 var app = express();
-app.use(express.json())
 
 var session = require('express-session');
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
-//app.use(express.static(__dirname));
+app.use(express.static(__dirname));
 
 // Import functions from hashpasswords.js to hash passwords
 var encryption = require('./modelData/hashpasswords.js');
@@ -64,7 +63,8 @@ var bodyParser = require('body-parser');
 
 // Use bodyParser for JSON
 //app.use(bodyParser.json());
-app.use(express.static(__dirname));
+//app.use(express.static('public'));
+//app.use('/',express.static(__dirname + 'public/'));
 app.set('view engine', 'jade')
 
 app.get('/', function (request, response) {
