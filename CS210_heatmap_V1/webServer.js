@@ -71,6 +71,10 @@ app.use(express.static(__dirname));
 //    response.send(index.jsx);
 //});
 
+app.get('/', function (req, res) {
+  res.render('index', {});
+});
+
 /*
  * Use express to handle argument passing in the URL.  This .get will cause express
  * /test/info - Return the SchemaInfo object of the database in JSON format. This
