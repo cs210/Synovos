@@ -67,13 +67,13 @@ var bodyParser = require('body-parser');
 app.use(express.static(__dirname));
 
 
-//app.get('/', function (request, response) {
-//    response.send(index.jsx);
-//});
-
-app.get('/', function (req, res) {
-  res.render('index', {});
+app.get('/', function (request, response) {
+    response.sendFile(__dirname + '/public/index.html');
 });
+
+//app.get('/', function (req, res) {
+//  res.render(../public/index.html, {});
+//});
 
 /*
  * Use express to handle argument passing in the URL.  This .get will cause express
