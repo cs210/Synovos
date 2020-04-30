@@ -93,7 +93,6 @@ class Onboarding extends React.Component {
   }
 
   handleFinishedWithAllOnboarding = (event) => {
-    console.log(this.state.jsonData)
     for (const building in this.state.jsonData) {
       let buildingPayload = {
         "name": building,
@@ -112,8 +111,12 @@ class Onboarding extends React.Component {
           let roomPayload = {
             "name": room,
             "sensors": [],
+            "location": this.state.jsonData[building][floor][room].location
           }
           for (const sensor in this.state.jsonData[building][floor][room]) {
+            if (sensor == "location") {
+              continue
+            }
             let sensorPayload = {
               "sensorType": sensor,
             }
@@ -127,7 +130,6 @@ class Onboarding extends React.Component {
         "/buildings/", buildingPayload,
         { withCredentials: true });
     }
-    // TODO: Upload the room position
   }
 
   handleFloorMapUpload = (building, floor, floorMapUrl) => {
@@ -146,6 +148,25 @@ class Onboarding extends React.Component {
     }))
   }
 
+  handleRoomSelect = (building, floor, room, location) => {
+    this.setState(prevState => ({
+      ...prevState,
+      jsonData: {
+        ...prevState.jsonData,
+        [building]: {
+          ...prevState.jsonData[building],
+          [floor]: {
+            ...prevState.jsonData[building][floor],
+            [room]: {
+              ...prevState.jsonData[building][room],
+              location: location
+            }
+          }
+        }
+      }
+    }))
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -154,6 +175,7 @@ class Onboarding extends React.Component {
             json={this.state.jsonData}
             onFloorMapUpload={this.handleFloorMapUpload}
             onFinishOnboarding={this.handleFinishedWithAllOnboarding}
+            onRoomSelect={this.handleRoomSelect}
           />
         :
         <Grid container justify="center" alignItems="center" direction="column" spacing={5}>
