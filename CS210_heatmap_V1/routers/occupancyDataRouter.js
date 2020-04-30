@@ -3,21 +3,30 @@ const router = express.Router();
 const OccupancyData = require('../schema/occupancyData.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 
+/**
+ * params:
+ * - room_ids: comma separated list of room_ids (can just send a single id)
+ * - start_date: start date for the data query (should set hours, minutes, second and miliseconds to 0)
+ * - end_date: end date for data query, not inclusive
+ */
 router.get('/', (req, res) => {
-    let { room_id, start_date, end_date } = req.query;
+    let { room_ids, start_date, end_date } = req.query;
 
-    if(room_id === '' || typeof room_id !== "string"
+    if(room_ids === '' || typeof room_ids !== "string"
         || isNaN(Date.parse(start_date))
         || isNaN(Date.parse(end_date))){
         res.status(400).json({
             status: "failure",
-            message: "Invalid query. Need to provide a room_id, start_date and end_date for the query"
+            message: "Invalid query. Need to provide room_ids, start_date and end_date for the query"
         });
         return;
     }
+    let roomIdList = room_ids.split(',');
     try {
         OccupancyData.find({
-            room_id: room_id,
+            room_id: {
+                $in: roomIdList
+            },
             date: {
                 $gte: new Date(start_date),
                 $lt: new Date(end_date)
@@ -31,7 +40,7 @@ router.get('/', (req, res) => {
             }
             if (occupancyData === null) {
                 // Query didn't return anything
-                console.log('OccupancyData with room_id ', room_id, " found." );
+                console.log('OccupancyData with room_ids ', room_ids, " returned null." );
                 res.status(400).send('Not found');
                 return;
             }
