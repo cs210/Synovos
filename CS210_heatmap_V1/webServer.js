@@ -63,11 +63,13 @@ app.use(session({
 var bodyParser = require('body-parser');
 
 // Use bodyParser for JSON
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(express.static(__dirname));
 
-app.get('/', function (request, response) {
-    response.send('flowers smell nice');
-});
+
+//app.get('/', function (request, response) {
+//    response.send(index.jsx);
+//});
 
 /*
  * Use express to handle argument passing in the URL.  This .get will cause express
