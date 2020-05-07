@@ -22,11 +22,11 @@ const roomSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    pdf_loc: {
-        x: String,
-        y: String,
-        w: String,
-        h: String
+    lcoation: {
+        x: Number,
+        y: Number,
+        width: Number,
+        height: Number
     },
     sensors: [sensorSchema]
 });
