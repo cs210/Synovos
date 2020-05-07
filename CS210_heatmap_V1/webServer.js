@@ -64,6 +64,10 @@ app.use(bodyParser.json());
 app.set('view engine', 'jade');
 
 app.get('/', function (request, response) {
+    response.sendFile(__dirname + '/public/home.html');
+});
+
+app.get('/login', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
 });
 //app.use('/static', express.static(__dirname + 'public/index.html'))
