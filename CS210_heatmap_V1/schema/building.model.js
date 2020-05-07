@@ -22,7 +22,7 @@ const roomSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    lcoation: {
+    location: {
         x: Number,
         y: Number,
         width: Number,
