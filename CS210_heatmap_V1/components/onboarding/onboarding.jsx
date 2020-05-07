@@ -106,6 +106,9 @@ class Onboarding extends React.Component {
           "rooms": [],
         }
         for (const room in this.state.jsonData[building][floor]) {
+          if (room == "img_url") {
+            continue
+          }
           let roomPayload = {
             "name": room,
             "sensors": [],
