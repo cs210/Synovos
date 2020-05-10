@@ -54,6 +54,7 @@ const buildingSchema = mongoose.Schema({
         required: true,
         auto: true
     },
+    // user_id: mongoose.Schema.Types.ObjectID, // The ID of the user assigned to the sensor.
     name: {
         type: String,
         required: true

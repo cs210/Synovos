@@ -46,21 +46,43 @@ router.post('/login', function (request, response) {
         // Storing login name & user id in the session that is only available in the backend
         request.session.login_name = request.body.login_name;
         request.session.user_id = info._id;
+        console.log(request.session)
         response.status(200).send(info);
     });
 });
 
+/*
+ * Delete all data associate with one account
+ */
+router.post('/delete', function(request, response){
+    console.log('delete user has been called')
+    user_id = request.session.user_id
+    // Find Photo with the right id and ind insert the comment
+    User.deleteOne({_id: user_id} , function (err, info) {
+        if (err) {
+            // Query returned an error.  We pass it back to the browser with an Internal Service
+            // Error (500) error code.
+            console.error('Doing /delete/ with error:', err);
+            response.status(500).send(JSON.stringify(err));
+            return;
+        }
+        if (!info) {
+            console.log('User with id ' + user_id + ' not found.');
+            response.status(400).send('Not found');
+            return;
+        }
+        console.log("delete user model");
+        console.log(info);
+        response.status(200).send(true);
+        // Find all associated data
+    });
+});
 
 /*
  * URL /admin/logout - Change the login state to logout and destroy all session
  */
 router.post('/logout', function(request, response){
     // Check if there is a session -- User logged in
-    if (!request.session.login_name){
-        console.log('User not logged in');
-        response.status(401).send('Unauthorized');
-        return;
-    }
 
     // Remove references with “delete”, then call request.session.destroy(callback)
     delete request.session.login_name;

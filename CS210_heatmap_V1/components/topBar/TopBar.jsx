@@ -21,6 +21,14 @@ class TopBar extends React.Component {
             }).catch(error => console.log("logout error", error));
     }
 
+    handleDelete() {
+        axios
+            .post("admin/delete", { withCredentials: true })
+            .then(() => {
+                this.props.handleLogout();
+            }).catch(error => console.log("logout error", error));
+    }
+
     // Output Logout Button & personalized "Hi, {user.first_name}" if user is logged in.
     outputRightString(){
         if(this.props.loggedIn){
@@ -29,7 +37,10 @@ class TopBar extends React.Component {
                     <Typography variant="h5" color="inherit" className="app-bar-right-inline-text">
                         Hi, {this.props.user.first_name}
                     </Typography>
-                    <Button size="large" variant="contained" color="secondary" onClick={() => this.handleLogoutClick()}>
+                    <Button size="large" variant="contained" color="secondary" onClick={() => this.handleDelete()}>
+                        Delete User
+                    </Button>
+                    <Button style={{marginLeft:"20px"}} size="large" variant="contained" color="secondary" onClick={() => this.handleLogoutClick()}>
                         Logout
                     </Button>
                 </div>
