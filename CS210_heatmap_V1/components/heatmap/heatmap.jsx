@@ -112,7 +112,7 @@ class Heatmap extends React.Component {
               roomData: [],
               date: new Date(),
               sliderValue: 48,
-              mapImage: ""
+              mapImage: "../../images/FloormapPreviewImage.png"
           };
           this.handleBuildingChange = this.handleBuildingChange.bind(this);
           this.handleFloorChange = this.handleFloorChange.bind(this);

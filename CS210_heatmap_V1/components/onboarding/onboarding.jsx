@@ -67,6 +67,7 @@ class Onboarding extends React.Component {
   }
 
   handleSubmit(event) {
+    event.preventDefault();
     // Do the creation of the object
     if (this.state.buildingName != "") {
       this.state.jsonData[this.state.buildingName] = this.state.jsonData[this.state.buildingName] != undefined ? this.state.jsonData[this.state.buildingName] : {};
@@ -84,8 +85,7 @@ class Onboarding extends React.Component {
         }
       }
     }
-    this.setState({jsonData: this.state.jsonData});
-    this.updateOptions();
+    this.setState({jsonData: this.state.jsonData}, this.updateOptions);
   }
 
   handleFinishedWithJsonPart = () => {
@@ -106,6 +106,9 @@ class Onboarding extends React.Component {
           "rooms": [],
         }
         for (const room in this.state.jsonData[building][floor]) {
+          if (room == "img_url") {
+            continue
+          }
           let roomPayload = {
             "name": room,
             "sensors": [],
