@@ -3,6 +3,7 @@ const router = express.Router();
 const OccupancyData = require('../schema/occupancyData.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 
+
 /**
  * params:
  * - room_ids: comma separated list of room_ids (can just send a single id)
@@ -10,6 +11,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * - end_date: end date for data query, not inclusive
  */
 router.get('/', (req, res) => {
+    let user_id = req.session.user_id; // will be used to find user-specific data
+
     let { room_ids, start_date, end_date } = req.query;
 
     if(room_ids === '' || typeof room_ids !== "string"
@@ -60,7 +63,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res)=>{
     let id = req.params.id;
-    console.log("Servicing get request for occupancyData with id ", id);
+    let user_id = req.session.user_id; // will be used to find user-specific data
 
     try {
         OccupancyData.findOne({_id: id}, function(err, occupancyData) {
@@ -92,6 +95,8 @@ router.get('/:id', (req, res)=>{
 // Create one sensorData entry
 router.post('/', (req, res) => {
     let {room_id, date, readings} = req.body;
+    let user_id = req.session.user_id; // will be used to find user-specific data
+
     if(!ObjectId.isValid(room_id)){
         res.status(400).json({
             status: "failure",

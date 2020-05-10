@@ -5,6 +5,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 router.get('/:id', (req, res)=>{
     let id = req.params.id;
+    let user_id = req.session.user_id; // will be used to find user-specific data
+
     console.log("Servicing get request for sensorData with id ", id);
 
     try {
@@ -37,6 +39,8 @@ router.get('/:id', (req, res)=>{
 // Create one sensorData entry
 router.post('/', (req, res) => {
     let {sensor_id, date, readings} = req.body;
+    let user_id = req.session.user_id; // will be used to find user-specific data
+
     if(!ObjectId.isValid(sensor_id)){
         res.status(400).json({
             status: "failure",

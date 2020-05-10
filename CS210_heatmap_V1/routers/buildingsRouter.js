@@ -5,6 +5,8 @@ const Building = require('../schema/building.model');
 //TODO: filter for those buildings that the user has access for
 //pending on user authentication being built
 router.get('/', (req, res) => {
+    let user_id = req.session.user_id; // will be used to find user-specific data
+
     try{
         Building.find({}, (err, buildings) => {
             if(err){
@@ -25,6 +27,7 @@ router.get('/', (req, res) => {
 
 router.patch('/:id', (req,res) => {
     let id = req.params.id;
+    let user_id = req.session.user_id; // will be used to find user-specific data
 
     console.log("Servicing patch request for building with id ", id);
     try {
@@ -44,10 +47,11 @@ router.patch('/:id', (req,res) => {
         console.error('Updating building yielded error:', err);
         res.status(400).send(JSON.stringify(err));
     }
-})
+});
 
 router.get('/:id', (req, res)=>{
     let id = req.params.id;
+    let user_id = req.session.user_id; // will be used to find user-specific data
     console.log("Servicing get request for building with id ", id);
 
     try {
@@ -80,6 +84,7 @@ router.get('/:id', (req, res)=>{
 // Create one building
 router.post('/', (req, res) => {
     const building = Building(req.body);
+    let user_id = req.session.user_id; // will be used to find user-specific data
 
     try {
         building.save((err, result) => {
