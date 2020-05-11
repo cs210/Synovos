@@ -28,6 +28,7 @@
     "immutability-helper": "^3.0.2",
     "js-yaml": "^3.13.1",
     "konva": "^4.1.6",
+    "material-table": "^1.57.2",
     "moment": "^2.24.0",
     "mongoose": "^5.9.1",
     "nodemon": "^2.0.2",

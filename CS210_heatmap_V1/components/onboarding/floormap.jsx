@@ -4,7 +4,7 @@ import {
     Button
 } from '@material-ui/core';
 import { render } from 'react-dom';
-import { Stage, Layer, Rect, Text, Image } from 'react-konva';
+import { Stage, Layer, Rect, Text, Image, Label, Group } from 'react-konva';
 import Konva from 'konva';
 import update from 'immutability-helper'
 
@@ -70,15 +70,19 @@ class RoomHighlight extends React.Component {
 
   render() {
     return (
+      <Group>
       <Rect
         x={this.props.x}
         y={this.props.y}
         width={this.props.width}
         height={this.props.height}
-        fill={"black"}
+        fill={this.props.fill}
         opacity={0.25}
         draggable={this.props.draggable}
+        stroke = "black"
       />
+      <Text x={this.props.x + (this.props.width * .20)} y={this.props.y + (this.props.height * .20)} fontStyle="bold" text={"Occupancy: " + this.props.occup}/>
+      </Group>
     );
   }
 }
@@ -87,7 +91,7 @@ class RoomHighlight extends React.Component {
 class FloorMap extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
                     stageWidth: 200,
                     stageHeight: 400,
                     rooms: this.props.rooms,
@@ -107,14 +111,14 @@ class FloorMap extends React.Component {
       width: width,
       height: height,
       key: this.props.currentRoom,
-    } 
+    }
   };
 
   componentDidMount() {
     this.checkSize();
     window.addEventListener("resize", this.checkSize);
   }
-  
+
   componentWillUnmount() {
     window.removeEventListener("resize", this.checkSize);
   }
@@ -165,7 +169,7 @@ class FloorMap extends React.Component {
       }))
 
       this.setState(prevState => ({
-        rooms: [...prevState.rooms, 
+        rooms: [...prevState.rooms,
                           this.newRectangle(this.originalX / this.state.stageWidth, this.originalY / this.state.stageHeight,
                                          (pos.x - this.originalX) / this.state.stageWidth, (pos.y - this.originalY) / this.state.stageHeight) ]
       }));
