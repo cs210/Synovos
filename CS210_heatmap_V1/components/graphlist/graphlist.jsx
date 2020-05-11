@@ -18,7 +18,6 @@ import {
 } from 'recharts';
 import './graphlist.css';
 import { withStyles } from '@material-ui/core/styles';
-import data from '../../data/predictivityData.json';
 var moment = require('moment');
 
 const columns = [
@@ -59,7 +58,6 @@ class GraphList extends React.Component {
             ExpandedGraphView: false,
             SelectedRow: -1,
         }
-        this.data = this.loadData(data);
         this.handleRowClick = this.handleRowClick.bind(this);
     }
 
@@ -70,14 +68,6 @@ class GraphList extends React.Component {
                 ExpandedGraphView: false,
             });
         }
-    }
-
-    loadData(json){
-        let data = [];
-        for(let key in json){
-            data.push([key, json[key]]);
-        }
-        return data;
     }
 
     handleRowClick(key){

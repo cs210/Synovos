@@ -25,7 +25,7 @@ class Sidebar extends React.Component {
                     <ListItem key={1} button >
                         <NavLink
                             to="/"
-                            style={{ textDecoration: 'none' }}
+                            style={{ textDecoration: 'none' , width: '100%'}}
                         >
                             <Button>
                                 Home
@@ -35,7 +35,7 @@ class Sidebar extends React.Component {
                     <ListItem key={2} button >
                         <NavLink
                             to="/Heatmap"
-                            style={{ textDecoration: 'none' }}
+                            style={{ textDecoration: 'none' , width: '100%'}}
                         >
                             <Button>
                                 Heat Map
@@ -45,7 +45,7 @@ class Sidebar extends React.Component {
                     <ListItem key={3} button >
                         <NavLink
                             to="/Listview"
-                            style={{ textDecoration: 'none' }}
+                            style={{ textDecoration: 'none' , width: '100%'}}
                         >
                             <Button>
                                 List View
@@ -55,10 +55,20 @@ class Sidebar extends React.Component {
                     <ListItem key={4} button >
                         <NavLink
                             to="/Onboarding"
-                            style={{ textDecoration: 'none' }}
+                            style={{ textDecoration: 'none' , width: '100%'}}
                         >
                             <Button>
                                 Onboarding
+                            </Button>
+                        </NavLink>
+                    </ListItem>
+                    <ListItem key={5} button >
+                        <NavLink
+                            to="/Edit"
+                            style={{ textDecoration: 'none' , width: '100%'}}
+                        >
+                            <Button>
+                                Edit Buildings
                             </Button>
                         </NavLink>
                     </ListItem>
