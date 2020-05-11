@@ -19,12 +19,12 @@ class Onboarding extends React.Component {
                   floorName: '',
                   roomName: '',
                   sensorName: '',
-                  jsonData: {},
+                  jsonData: {"a":{"s":{"f":["e"]}}},
                   buildingOptions: [],
                   floorOptions: [],
                   roomOptions: [],
                   sensorOptions: [],
-                  showFloorMapOnboarding: false,
+                  showFloorMapOnboarding: true,
                  };
 
     this.handleBuildingChange = this.handleBuildingChange.bind(this);
@@ -180,7 +180,7 @@ class Onboarding extends React.Component {
             onRoomSelect={this.handleRoomSelect}
           />
         :
-        <Grid container justify="center" alignItems="center" direction="column" spacing={5}>
+        <Grid container alignItems="center" direction="column" spacing={5}>
         <Grid item>
         <form onSubmit={this.handleSubmit}>
           <Autocomplete

@@ -19,7 +19,7 @@ class UploadFloorMapStep extends React.Component {
     }
 
     return(
-      <Grid container direction="column" spacing={5}>
+      <Grid container direction="column" justify="center" alignItems="center" spacing={5}>
         <Grid item>
           <Typography variant="h6">
             {`For building ${this.props.currentBuilding} upload the floormap for ${this.props.currentFloor}.`}
@@ -53,13 +53,13 @@ class SelectRoomStep extends React.Component {
     }
 
     return(
-      <Grid container direction="column" spacing={5}>
+      <Grid container direction="column" justify="center" alignItems="center" spacing={5}>
         <Grid item>
           <Typography variant="h6">
             {`Click and drag to select the room ${this.props.currentRoom}.`}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid item style={{flexGrow: 1}}>
           <FloorMap
             mode={"onboarding"}
             currentFloorMap={this.props.currentFloorMapPicture}
@@ -91,14 +91,16 @@ class FinishSelectRoomStep extends React.Component {
     return(
       <Grid container direction="column" spacing={5}>
         <Grid item>
-          <Typography variant="h6">
-            {`Adjust the location of room ${this.props.currentRoom}.`}
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={() => {this.child.handleMouseUp()}}>
-              Finished
-          </Button>
+          <div>
+            <Typography variant="h6">
+              {`Adjust the location of room ${this.props.currentRoom}.`}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => {this.child.handleMouseUp()}}>
+                Finished
+            </Button>
+          </div>
         </Grid>
         <Grid item>
           <FloorMap
@@ -132,7 +134,7 @@ class ThankYouStep extends React.Component {
 
     return(
       <React.Fragment>
-        <Typography variant="h2">
+        <Typography variant="h5">
           {`Thank You! Your building information has been uploaded.`}
         </Typography>
       </React.Fragment>
@@ -210,13 +212,14 @@ class OnboardingFloorMap extends React.Component {
     let oldBuildingandFloor = [this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1]]
 
     if (this.state.currentRoomsIdx === this.rooms.length - 1) {
-      this.setState({currentStep: "thankYou"})
-      this.props.onFinishOnboarding()
+      this.setState({currentStep: "thankYou"}, this.props.onFinishOnboarding)
     } else {
       this.setState({currentRoomsIdx: this.state.currentRoomsIdx + 1}, function() {
         if (oldBuildingandFloor[0] != this.rooms[this.state.currentRoomsIdx][0] || oldBuildingandFloor[1] != this.rooms[this.state.currentRoomsIdx][1]) {
           this.setState({currentStep: "uploadFloorMap"})
           this.oldRooms = []
+        } else {
+          this.setState({currentStep: "selectRoom"})
         }
       })
     }
