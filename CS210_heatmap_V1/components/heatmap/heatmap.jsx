@@ -1,26 +1,14 @@
 import React from 'react';
-import './heatmap.css';
 import {
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem
+    Grid
 } from "@material-ui/core";
-import {
-    MuiPickersUtilsProvider,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-import Slider from '@material-ui/core/Slider';
-import PropTypes from 'prop-types';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Slider from '@material-ui/core/Slider';
 import Filters from '../filters/filters.jsx';
 import '../filters/filters.css';
-import DateFnsUtils from '@date-io/date-fns';
+import axios from "axios";
+import FloorMap from "../onboarding/floormap.jsx"
 
-// Import from json
-import * as jsonData from "./sample_data/sample1.json";
-var buildings = Object.keys(jsonData);
-var floors = [];
 var default_background = "../../images/FloormapPreviewImage.png"
 
 //TODO: Make range of colors adaptable to occupancy (range)
@@ -104,189 +92,159 @@ const marks = [
 
 class Heatmap extends React.Component {
       constructor(props) {
-          super(props);
-          this.state = {
-              building: "",
-              floor: "",
-              numRooms: 1,
-              roomData: [],
-              date: new Date(),
-              sliderValue: 48,
-              mapImage: "../../images/FloormapPreviewImage.png"
-          };
-          this.handleBuildingChange = this.handleBuildingChange.bind(this);
-          this.handleFloorChange = this.handleFloorChange.bind(this);
-          this.handleDateChange = this.handleDateChange.bind(this);
-          this.handleSliderChange = this.handleSliderChange.bind(this);
+        super(props);
+        this.state = {
+            selectedBuilding: "",
+            selectedFloor: "",
+            selectedFoorMap: "",
+            selectedDate: new Date(),
+            buildings:  [],
+            data: undefined,
+            sliderValue: 48,
+        };
+        this.handleSliderChange = this.handleSliderChange.bind(this );
       }
 
-      handleSliderChange(event){
+      componentDidMount() {
+          axios.get(
+              "/buildings", { withCredentials: true}
+          ).then(response => {
+              if(response.status == 200){
+                  this.setState({
+                      buildings: response.data.buildings,
+                  });
+                  console.log("successfully fetched buildings")
+              } else{
+                  console.error("Buildings request failed")
+              }
+          });
+      }
+
+      handleSliderChange(event) {
         this.setState({
             sliderValue: parseInt(event.target.innerText),
         });
       }
 
-      handleBuildingChange(event) {
-          floors = Object.keys(jsonData[event.target.value])
-          const floor= this.state.floor;
-          const date = this.state.date;
-          this.setState({
-              building: event.target.value,
-              floor: floor,
-              date: date
-          });
+    fetchFloorData = () => {
+        if(this.state.selectedBuilding !== '' &&
+            Array.isArray(this.state.selectedBuilding.floors) &&
+            this.state.selectedBuilding.floors.includes(this.state.selectedFloor) &&
+            Array.isArray(this.state.selectedFloor.rooms)){
+            let selectedFloorId = this.state.selectedFloor._id;
+            let selectedBuildingId = this.state.selectedBuilding._id;
+            let room_ids = this.state.selectedFloor.rooms.map(room => {
+                return room._id;
+            });
+            let start_date = new Date(this.state.selectedDate.valueOf());
+            start_date.setHours(0, 0, 0, 0);
+            let end_date = new Date(start_date.valueOf());
+            end_date.setDate(end_date.getDate() + 1);
+            axios.get('/occupancyData', {
+                params: {
+                    room_ids: room_ids.join(','),
+                    start_date: start_date,
+                    end_date: end_date
+                }
+            }).then(result => {
+                if(result.status === 200 && Array.isArray(result.data.occupancyData)) {
+                    // creating an array of elements with values name, data for display
+                    let data = this.state.selectedFloor.rooms.map(room => {
+                        let id = room._id;
+                        let entry = result.data.occupancyData.find((data) =>{ return data.room_id === id});
+                        return {
+                            name: room.name,
+                            data: entry === undefined ? undefined : entry.readings.map(entry => {
+                                return {
+                                    time: new Date(entry.time).valueOf(),
+                                    data: entry.data
+                                }
+                            })
+                        }
+                    });
+                    // checking one last time that we're in a valid state
+                    if(this.state.selectedBuilding._id === selectedBuildingId
+                        && this.state.selectedFloor._id ===selectedFloorId){
+                        this.setState({
+                            data: data
+                        });
+                    }
+
+                } else {
+                    console.error("Failed at getting building data with code ", result.status)
+                }
+            });
+        }
       }
 
-      handleFloorChange(event) {
-          const building = this.state.building;
-          const date = this.state.date;
-          // Change background image
-          var image = jsonData[building][event.target.value]["PDF"].toString();
-          document.getElementById("floorLayout").src = image;
-          // Get number of rooms in floor
-          var buildings = Object.keys(jsonData);
-          var totalRooms = Object.keys(jsonData[building][event.target.value]["Rooms"]);
-          this.setState({
-              building: building,
-              floor: event.target.value,
-              date: date,
-              numRooms: totalRooms,
-              roomData: jsonData[building][event.target.value]["Rooms"],
-              mapImage: image
-          });
-      }
+    handleBuildingChange = (event) => {
+        this.setState({
+            selectedBuilding: event.target.value,
+            selectedFloor: "",
+            selectedFoorMap: "",
+            data: undefined,
+        });
+    }
 
-      handleDateChange(date) {
-          const building= this.state.building;
-          const floor= this.state.floor;
-          this.setState({
-              building: building,
-              floor: floor,
-              date: date
-          });
-      }
+    handleFloorChange = (event) => {
+      this.setState({
+          selectedFloor: event.target.value,
+          selectedFoorMap: this.state.selectedBuilding.floors.find(
+              floor => floor.name == event.target.value.name
+            ).img_url,
+          data: undefined,
+      }, this.fetchFloorData);
+    }
 
-      createRooms = () => {
-        let rooms = []
-        let rd = this.state.roomData
-        let numRooms = Object.keys(rd).length
-        //console.log("Creating " + numRooms + " rooms")
-
-        for (let i = 1; i <= numRooms; i++){
-          //console.log(i)
-          let id = "Room" + i;
-          //console.log(id)
-          let height = rd[id]["h"];
-          //console.log(height)
-          let width = rd[id]["w"];
-          //console.log(width)
-          let x = rd[id]["x"];
-          let y = rd[id]["y"];
-          rooms.push(
-            <rect id={id} height={height} width={width} x = {x} y={y} style={{
-                      fill: getColor(id, this.state.sliderValue)
-                    }} />
-                  );
-        };
-        //console.log(rooms);
-        return rooms;
-      }
+    handleDateChange = (date) => {
+        this.setState({
+            selectedDate: date,
+            data: undefined,
+        }, this.fetchFloorData);
+    };
 
 
     render() {
+        let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined 
+          || this.state.selectedBuilding.floors === null) ? [] : this.state.selectedBuilding.floors;
+        let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room => ({"key": room.name, ...room.location})) : []
         return (
-          <div>
-          <div>
-            <div>
-                <div>
-                <div className="filters">
-                    <div className="filter">
-                        <FormControl className="filters-formControls">
-                            <InputLabel id = "buildingFilter">Building</InputLabel>
-                            <Select
-                                labelId = "buildingFilter"
-                                value={this.state.building}
-                                onChange={this.handleBuildingChange}
-                            >
-                                {buildings.map((building, index)=> <MenuItem key = {index} value={building}>{building}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="filter">
-                        <FormControl className="filters-formControls">
-                            <InputLabel id = "floorFilter">Floor</InputLabel>
-                            <Select
-                                labelId = "floorFilter"
-                                value={this.state.floor}
-                                onChange={this.handleFloorChange}
-                            >
-                                {floors.map((floor, index)=> <MenuItem key = {index} value={floor}>{floor}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className = "datePicker">
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <KeyboardDatePicker
-                            disableToolbar
-                            variant="inline"
-                            format="MM/dd/yyyy"
-                            margin="normal"
-                            value={this.state.date}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
-                            onChange = {this.handleDateChange}
-                            disableFuture = {true}
-                            />
-                        </MuiPickersUtilsProvider>
-                      </div>
-                    </div>
-                <div className="gradientBar">
-                {/*
-                  <table>
-                    <tr>
-                      <td>
-                      <div class="leftCell">[min people]</div>
-                      <div class="rightCell">[max people]</div>
-                      </td>
-                    </tr>
-                  </table>
-                */}
-                  </div>
-    <div className="map">
-    <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>
-    <svg className="svgLayout">
-    {this.createRooms()}
-    </svg>
-    {/*
-      <rect id="room1" height="19%" width="9%" x="0" y="0" style={{
-          fill: getColor("Room1", this.state.sliderValue)
-        }} />
-    <rect id="room1" height="19%" width="9%" style={{
-        fill: getColor("Room1", this.state.sliderValue)
-      }} />
-    <rect id="room2" x = "26%" y = "70%" width="11.5%" height="12%"style={{
-        fill: getColor("Room2", this.state.sliderValue)
-      }}/>
-    <rect id="room3" x = "50%" y = "84%" width="8%" height="12%"style={{
-        fill: getColor("Room3", this.state.sliderValue),
-      }}/>
-    <rect id="room4" x = "64%" y = "2%" width="6%" height="22%"style={{
-        fill: getColor("Room4", this.state.sliderValue),
-      }}/>
-    */}
+          <Grid container direction="column" spacing={5}>
+            <Grid item>
+              <Filters
+                buildings = {this.state.buildings}
+                handleBuildingChange = {this.handleBuildingChange}
+                building = {this.state.selectedBuilding}
+                floors = {floors}
+                handleFloorChange = {this.handleFloorChange}
+                floor = {this.state.selectedFloor}
+                date = {this.state.selectedDate}
+                handleDateChange = {this.handleDateChange}
+              />
+            </Grid>
+            <Grid item>
+              <FloorMap
+                currentFloorMap={this.state.selectedFoorMap ? this.state.selectedFoorMap : "../../images/FloormapPreviewImage.png"}
+                mode="heatmap"
+                rooms={rooms}
+              />
+            </Grid>
+            <Grid item>
+              <div className="gradientBar"></div>
+              <PrettoSlider
+                max={96}
+                valueLabelDisplay="auto"
+                aria-label="pretto slider"
+                marks={marks}
+                defaultValue={12}
+                onChange={this.handleSliderChange}
+                style={{width: '90%',
+                        marginLeft: '2%'}}
+              >
 
-
-    </div>
-
-                </div>
-                <PrettoSlider id="slider" max="96" valueLabelDisplay="auto" aria-label="pretto slider" marks={marks} defaultValue={12} onChange={this.handleSliderChange}>
-                </PrettoSlider>
-                </div>
-            </div>
-
-            </div>
-
+              </PrettoSlider>
+            </Grid>
+          </Grid>
         );
     }
 }
