@@ -16,6 +16,7 @@ import Heatmap from '../components/heatmap/heatmap';
 import Onboarding from '../components/onboarding/onboarding';
 import Register from "../components/register/Register";
 import Login from "../components/login/Login";
+import EditBuildings from "../components/editbuildings/editbuildings";
 
 
 class Index extends React.Component {
@@ -116,6 +117,9 @@ class Index extends React.Component {
                                                 <Route key={6} exact path="/Onboarding">
                                                     <Onboarding></Onboarding>
                                                 </Route>,
+                                                <Route key = {7} exact path="/Edit">
+                                                    <EditBuildings></EditBuildings>
+                                                </Route>,
                                             ]
                                             :
                                             [
@@ -133,6 +137,7 @@ class Index extends React.Component {
                                                 <Redirect key={4} exact path="/Heatmap" to="/login" />,
                                                 <Redirect key={5} exact path="/Listview" to="/login" />,
                                                 <Redirect key={6} exact path="/Onboarding" to="/login" />,
+                                                <Redirect key={7} exact path ="/Edit" to="/login"/>,
                                             ]
                                     }
                                 </Switch>

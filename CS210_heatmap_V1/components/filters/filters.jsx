@@ -47,26 +47,46 @@ class Filters extends React.Component {
                             value={this.props.floor}
                             onChange={this.props.handleFloorChange}
                         >
-                            {this.props.floors.map((floor, index)=> <MenuItem key = {floor._id} value={floor}>{floor.name}</MenuItem>)}
+                            {this.props.floors.map((floor)=> <MenuItem key = {floor._id} value={floor}>{floor.name}</MenuItem>)}
                         </Select>
                     </FormControl>
                 </div>
-                <div className = "datePicker">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                        disableToolbar
-                        variant="inline"
-                        format="MM/dd/yyyy"
-                        margin="normal"
-                        value={this.props.date}
-                        KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                        }}
-                        onChange = {this.props.handleDateChange}
-                        disableFuture = {true}
-                        />
-                    </MuiPickersUtilsProvider>
-                </div>
+                {
+                    this.props.displayRoom &&
+                    <div className="filter">
+                        <FormControl
+                            className="filters-formControls"
+                            disabled = {this.props.rooms.length === 0} >
+                            <InputLabel id = "roomFilter">Room</InputLabel>
+                            <Select
+                                labelId = "roomFilter"
+                                value={this.props.room}
+                                onChange={this.props.handleRoomChange}
+                            >
+                                {this.props.rooms.map((room)=> <MenuItem key = {room._id} value={room}>{room.name}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </div>
+                }
+                {
+                    this.props.displayDate &&
+                    <div className = "datePicker">
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                format="MM/dd/yyyy"
+                                margin="normal"
+                                value={this.props.date}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                                onChange = {this.props.handleDateChange}
+                                disableFuture = {true}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </div>
+                }
             </div>
         );
     }
@@ -75,7 +95,10 @@ class Filters extends React.Component {
 Filters.defaultProps = {
     buildings: [],
     floors: [],
-    date: new Date()
+    rooms: [],
+    date: new Date(),
+    displayDate: true,
+    displayRoom: false,
 }
 
 Filters.propTypes ={
@@ -83,10 +106,15 @@ Filters.propTypes ={
     floors: PropTypes.arrayOf(PropTypes.object),
     floor: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     building: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    rooms: PropTypes.arrayOf(PropTypes.object),
+    room: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     date: PropTypes.object,
     handleBuildingChange: PropTypes.func,
     handleDateChange: PropTypes.func,
-    handleFloorChange: PropTypes.func
+    handleFloorChange: PropTypes.func,
+    handleRoomChange: PropTypes.func,
+    displayDate: PropTypes.bool,
+    displayRoom: PropTypes.bool,
 }
 
 export default Filters;

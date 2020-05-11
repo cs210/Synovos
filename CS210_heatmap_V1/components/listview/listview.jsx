@@ -17,7 +17,8 @@ class Listview extends React.Component {
 
     componentDidMount() {
         axios.get(
-            "/buildings"
+            "/buildings",
+            { withCredentials: true }
         ).then(response => {
             if(response.status == 200){
                 this.setState({
@@ -34,7 +35,8 @@ class Listview extends React.Component {
         if(this.state.selectedBuilding !== '' &&
             Array.isArray(this.state.selectedBuilding.floors) &&
             this.state.selectedBuilding.floors.includes(this.state.selectedFloor) &&
-            Array.isArray(this.state.selectedFloor.rooms)){
+            Array.isArray(this.state.selectedFloor.rooms)
+        ){
             let selectedFloorId = this.state.selectedFloor._id;
             let selectedBuildingId = this.state.selectedBuilding._id;
             let room_ids = this.state.selectedFloor.rooms.map(room => {
