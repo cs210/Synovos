@@ -7,6 +7,7 @@ import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Image, Label, Group } from 'react-konva';
 import Konva from 'konva';
 import update from 'immutability-helper'
+import PropTypes from 'prop-types';
 
 
 class URLImage extends React.Component {
@@ -160,6 +161,8 @@ class FloorMap extends React.Component {
   handleMouseUp = (event) => {
     if (this.props.mode == "onboarding") {
       this.isDrawing = false;
+      this.props.onRoomSelect(event, this.state.rooms[this.state.rooms.length - 1])
+    } else if (this.props.mode === "adjusting") {
       this.props.onRoomSelectFinish(event, this.state.rooms[this.state.rooms.length - 1])
     }
   }
@@ -229,11 +232,14 @@ class FloorMap extends React.Component {
   }
 }
 
-FloorMap.defaultProps = {
-    currentFloorMap: "../../images/FloormapPreviewImage.png", // TODO: This should be a link to the default image
-    rooms: [],
-    currentRoom: "",
-    mode: "heatmap", // Other option is onboarding
+
+FloorMap.propTypes = {
+    currentFloorMap: PropTypes.string.isRequired,
+    mode: PropTypes.string.isRequired,
+    currentRoom: PropTypes.string,
+    rooms: PropTypes.arrayOf(PropTypes.object),
+    onRoomSelect: PropTypes.func,
+    onRoomSelectFinish: PropTypes.func,
 }
 
 export default FloorMap;

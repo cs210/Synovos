@@ -89,7 +89,9 @@ class Onboarding extends React.Component {
   }
 
   handleFinishedWithJsonPart = () => {
-    this.setState({showFloorMapOnboarding: true});
+    if (Object.keys(this.state.jsonData).length !== 0) {
+      this.setState({showFloorMapOnboarding: true});
+    }
   }
 
   handleFinishedWithAllOnboarding = (event) => {
