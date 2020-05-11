@@ -38,7 +38,14 @@ class OnboardingFloorMap extends React.Component {
     this.props.onFloorMapUpload(this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1], pwd)
   }
 
-  handleRoomSelect = (event) => {
+  handleRoomSelect = (event, room) => {
+    this.props.onRoomSelect(this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1], this.rooms[this.state.currentRoomsIdx][2], 
+      {
+        x: room.x,
+        y: room.y,
+        width: room.width,
+        height: room.height,
+      })
     let oldBuildingandFloor = [this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1]]
     this.setState({currentRoomsIdx: this.state.currentRoomsIdx != this.rooms.length - 1 ? this.state.currentRoomsIdx + 1 : null}, function() {
       if (this.state.currentRoomsIdx == null) {
@@ -53,9 +60,10 @@ class OnboardingFloorMap extends React.Component {
 
   render() {
     return (
-      <Grid container justify="center" alignItems="center" direction="column" spacing={5}>
+      <Grid container direction="column" spacing={5}>
         { this.state.currentRoomsIdx != null 
           ?
+            <div>
             <Grid container item>
               <Grid container item justify="center" alignItems="center" direction="row" spacing={5}>
                 <Grid item>
@@ -80,17 +88,19 @@ class OnboardingFloorMap extends React.Component {
                   }
                 </Grid>
               </Grid>
-
-              <Grid item>
-              { !this.state.isPromptFloorMap &&
-                <FloorMap
-                  currentFloorMap={this.state.currentFloorMapPicture}
-                  currentRoom={this.rooms[this.state.currentRoomsIdx]}
-                  onRoomSelectFinish={this.handleRoomSelect}
-                />
-              }
-              </Grid>
             </Grid>
+
+            <Grid item>
+            { !this.state.isPromptFloorMap &&
+              <FloorMap
+                mode={"onboarding"}
+                currentFloorMap={this.state.currentFloorMapPicture}
+                currentRoom={this.rooms[this.state.currentRoomsIdx][2]}
+                onRoomSelectFinish={this.handleRoomSelect}
+              />
+            }
+            </Grid>
+          </div>
         :
           <Grid item> 
             <Typography variant="h3"> Thank You! </Typography>

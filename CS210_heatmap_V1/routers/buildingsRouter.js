@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     let user_id = req.session.user_id; // will be used to find user-specific data
 
     try{
-        Building.find({}, (err, buildings) => {
+        Building.find({user_id: user_id}, (err, buildings) => {
             if(err){
                 console.error('fetching Buildings yielded error: ', err);
                 res.status(400).send(JSON.stringify((err)));
@@ -31,7 +31,7 @@ router.patch('/:id', (req,res) => {
 
     console.log("Servicing patch request for building with id ", id);
     try {
-        Building.updateOne({_id: id}, { $set: req.body }, function(err, building) {
+        Building.updateOne({_id: id, user_id: user_id}, { $set: req.body }, function(err, building) {
             if (err) {
                 console.error('Updating building with id ', id, " yielded error");
                 res.status(400).send(JSON.stringify(err));
@@ -55,7 +55,7 @@ router.get('/:id', (req, res)=>{
     console.log("Servicing get request for building with id ", id);
 
     try {
-        Building.findOne({_id: id}, function(err, building) {
+        Building.findOne({_id: id, user_id: user_id}, function(err, building) {
             if (err) {
                 // Query returned an error
                 console.error('Fetching building yielded error:', err);
@@ -85,6 +85,7 @@ router.get('/:id', (req, res)=>{
 router.post('/', (req, res) => {
     const building = Building(req.body);
     let user_id = req.session.user_id; // will be used to find user-specific data
+    building.user_id = user_id;
 
     try {
         building.save((err, result) => {

@@ -51,8 +51,8 @@ class URLImage extends React.Component {
       <Image
         x={this.props.x}
         y={this.props.y}
-        width={1000}
-        height={600}
+        width={this.props.width}
+        height={this.props.height}
         image={this.state.image}
         ref={node => {
           this.imageNode = node;
@@ -88,9 +88,9 @@ class FloorMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-                    scaleX: window.innerWidth / 2000,
-                    scaleY: window.innerHeight / 2000,
-                    highlightedRooms: [],
+                    stageWidth: 200,
+                    stageHeight: 400,
+                    rooms: this.props.rooms,
                  };
 
     this.stageRef = React.createRef();
@@ -111,66 +111,79 @@ class FloorMap extends React.Component {
   };
 
   componentDidMount() {
-    window.addEventListener("resize", this.handleResize);
+    this.checkSize();
+    window.addEventListener("resize", this.checkSize);
   }
   
   componentWillUnmount() {
-    window.addEventListener("resize", null);
+    window.removeEventListener("resize", this.checkSize);
   }
 
 
-  handleResize = (event) => {
+  checkSize = () => {
+    const width = this.container.offsetWidth
+    const height = this.container.offsetHeight
     this.setState({
-      scaleX: window.innerWidth / 2000,
-      scaleY: window.innerHeight / 2000,
-    })
-  }
+      stageWidth: width,
+      stageHeight: height
+    });
+  };
+
 
   handleMouseDown = (event) => {
+    if (this.props.mode == "onboarding") {
+      this.isDrawing = true;
 
-    this.isDrawing = true;
+      var pos = this.stageRef.current.getPointerPosition();
+      this.originalX = pos.x
+      this.originalY = pos.y
 
-    var pos = this.stageRef.current.getPointerPosition();
-    this.originalX = pos.x
-    this.originalY = pos.y
-
-    this.setState(prevState => ({
-      highlightedRooms: [...prevState.highlightedRooms, this.newRectangle(this.originalX, this.originalY,
-                                       pos.x - this.originalX, pos.y - this.originalY) ]
-    }));
+      this.setState(prevState => ({
+        rooms: [...prevState.rooms, this.newRectangle(this.originalX / this.state.stageWidth, this.originalY / this.state.stageHeight,
+                                         (pos.x - this.originalX) / this.state.stageWidth, (pos.y - this.originalY)) / this.state.stageHeight ]
+      }));
+    }
   }
 
   handleMouseUp = (event) => {
-    this.isDrawing = false;
-    this.props.onRoomSelectFinish(event)
+    if (this.props.mode == "onboarding") {
+      this.isDrawing = false;
+      this.props.onRoomSelectFinish(event, this.state.rooms[this.state.rooms.length - 1])
+    }
   }
 
   handleMouseMove = (event) => {
-    if (!this.isDrawing) {
-        return;
+    if (this.props.mode == "onboarding") {
+      if (!this.isDrawing) {
+          return;
+      }
+
+      var pos = this.stageRef.current.getPointerPosition();
+
+      this.setState((prevState) => ({
+        rooms: update(prevState.rooms, {$splice: [[-1, 1]]})
+      }))
+
+      this.setState(prevState => ({
+        rooms: [...prevState.rooms, 
+                          this.newRectangle(this.originalX / this.state.stageWidth, this.originalY / this.state.stageHeight,
+                                         (pos.x - this.originalX) / this.state.stageWidth, (pos.y - this.originalY) / this.state.stageHeight) ]
+      }));
     }
-
-    var pos = this.stageRef.current.getPointerPosition();
-
-    this.setState((prevState) => ({
-      highlightedRooms: update(prevState.highlightedRooms, {$splice: [[-1, 1]]})
-    }))
-
-    this.setState(prevState => ({
-      highlightedRooms: [...prevState.highlightedRooms, 
-                        this.newRectangle(this.originalX, this.originalY,
-                                       pos.x - this.originalX, pos.y - this.originalY) ]
-    }));
   }
 
 
   render() {
+    let whichRooms = this.props.mode == "heatmap" ? this.props.rooms : this.state.rooms
     return (
+      <div
+        ref={node => {
+          this.container = node;
+        }}
+      >
       <Stage
-        width={window.innerWidth}
-        height={window.innerHeight}
-        scaleX={this.scaleX}
-        scaleY={this.scaleY}
+        width={this.state.stageWidth}
+        height={this.state.stageHeight}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
         onMouseMove={this.handleMouseMove}
@@ -181,23 +194,31 @@ class FloorMap extends React.Component {
             src={this.props.currentFloorMap}
             x={0}
             y={0}
-            width={this.stageRef.width}
-            height={this.stageRef.height} />
+            width={this.state.stageWidth}
+            height={this.state.stageHeight} />
 
-          {this.state.highlightedRooms.map(({ height, width, x, y , key}) => (
+          {whichRooms.map(({ height, width, x, y , key}) => (
             <RoomHighlight
               key={key}
-              height={height}
-              width={width}
-              x={x}
-              y={y}
+              height={this.state.stageHeight * height}
+              width={this.state.stageWidth * width}
+              x={this.state.stageWidth * x}
+              y={this.state.stageHeight * y}
               draggable={false}
             />
             ))}
         </Layer>
       </Stage>
+      </div>
     );
   }
+}
+
+FloorMap.defaultProps = {
+    currentFloorMap: "../../images/FloormapPreviewImage.png", // TODO: This should be a link to the default image
+    rooms: [],
+    currentRoom: "",
+    mode: "heatmap", // Other option is onboarding
 }
 
 export default FloorMap;

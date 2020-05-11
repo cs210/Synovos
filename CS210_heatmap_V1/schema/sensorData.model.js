@@ -7,7 +7,6 @@ const dataReadingSchema = new mongoose.Schema({
 
 // Schema storing sensor data for one day for one sensor
 const sensorDataSchema = new mongoose.Schema({
-    // user_id: mongoose.Schema.Types.ObjectID, // The ID of the user assigned to the sensor.
     sensor_id: {
         type: mongoose.Schema.Types.ObjectID,
         required: true
