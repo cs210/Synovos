@@ -229,17 +229,17 @@ class EditBuildings extends React.Component{
         // Choosing data to display
         if(this.state.selectedRoom !== ''){
             // Room selected, displaying sensors
-            title = this.state.selectedRoom.name;
+            title = this.state.selectedRoom.name + "'s sensors";
             data = Array.isArray(this.state.selectedRoom.sensors) ? this.state.selectedRoom.sensors : [];
             columns = columnMap['sensors'];
         } else if(this.state.selectedFloor !== ''){
             // Floor selected, displaying rooms
-            title = this.state.selectedFloor.name;
+            title = this.state.selectedFloor.name + "'s rooms";
             data = Array.isArray(this.state.selectedFloor.rooms) ? this.state.selectedFloor.rooms : [];
             columns = columnMap['rooms'];
         } else if(this.state.selectedBuilding !== ''){
             // Building selected, displaying floors
-            title = this.state.selectedBuilding.name;
+            title = this.state.selectedBuilding.name + "'s floors";
             data = Array.isArray(this.state.selectedBuilding.floors) ? this.state.selectedBuilding.floors : [];
             columns = columnMap['floors'];
         } else {

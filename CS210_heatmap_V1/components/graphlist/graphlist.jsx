@@ -221,7 +221,7 @@ class GraphList extends React.Component {
                     </GraphTable>
                     }
                 </div>
-                {!this.props.data && <img id="floorLayout" src="../../images/FloormapPreviewImage.png"/>}
+                {!this.props.data && <img id="floorLayout" src="../../images/FloormapPreviewImage.png" style={{width:'100%'}}/>}
             </div>
         );
     }

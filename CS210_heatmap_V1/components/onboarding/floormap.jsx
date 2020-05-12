@@ -77,11 +77,16 @@ class RoomHighlight extends React.Component {
         width={this.props.width}
         height={this.props.height}
         fill={this.props.fill}
-        opacity={0.25}
+        opacity={this.props.opacity}
         draggable={this.props.draggable}
         stroke = "black"
+        strokeWidth= {1}
       />
-      <Text x={this.props.x + (this.props.width * .20)} y={this.props.y + (this.props.height * .20)} fontStyle="bold" text={"Occupancy: " + this.props.occup}/>
+      <Text 
+        x={this.props.x + (this.props.width * .20)}
+        y={this.props.y + (this.props.height * .20)}
+        fontStyle="bold"
+        text={this.props.text}/>
       </Group>
     );
   }
@@ -111,6 +116,9 @@ class FloorMap extends React.Component {
       width: width,
       height: height,
       key: this.props.currentRoom,
+      fill: "black",
+      opacity: 0.25,
+      text: "",
     }
   };
 
@@ -201,7 +209,7 @@ class FloorMap extends React.Component {
             width={this.state.stageWidth}
             height={this.state.stageHeight} />
 
-          {whichRooms.map(({ height, width, x, y , key}) => (
+          {whichRooms.map(({ height, width, x, y , key, fill, opacity, text}) => (
             <RoomHighlight
               key={key}
               height={this.state.stageHeight * height}
@@ -209,6 +217,9 @@ class FloorMap extends React.Component {
               x={this.state.stageWidth * x}
               y={this.state.stageHeight * y}
               draggable={false}
+              fill={fill}
+              opacity={opacity}
+              text={text}
             />
             ))}
         </Layer>
