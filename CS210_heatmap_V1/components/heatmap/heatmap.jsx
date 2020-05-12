@@ -12,12 +12,19 @@ import FloorMap from "../onboarding/floormap.jsx"
 var default_background = "../../images/FloormapPreviewImage.png"
 
 //TODO: Make range of colors adaptable to occupancy (range)
-const occupancyColors = ['Gray','Yellow','Orange','Red', 'DarkRed'];
+const occupancyColors = ['gray','yellow','orange','red', 'darkred'];
 
 
-function getColor(room, value){
-  var occupancy = jsonData["Gates"]["Floor0"]["Rooms"][room]["occupancy"];
-  return occupancyColors[occupancy[value]];
+function getColorAndValue(data, room, value){
+  if (data === undefined) {
+    return ["gray", "No Data"]
+  }
+  let occupancy_data = data.filter(element => element.name == room)[0].data
+
+  if (occupancy_data === undefined || occupancy_data[value] === undefined) {
+    return ["gray", "No Data"]
+  }
+  return [occupancyColors[occupancy_data[value].data], occupancy_data[value].data];
 }
 
 const PrettoSlider = withStyles({
@@ -162,6 +169,8 @@ class Heatmap extends React.Component {
                             })
                         }
                     });
+                    console.log("Got occupancy data!!")
+                    console.log(data)
                     // checking one last time that we're in a valid state
                     if(this.state.selectedBuilding._id === selectedBuildingId
                         && this.state.selectedFloor._id ===selectedFloorId){
@@ -207,7 +216,17 @@ class Heatmap extends React.Component {
     render() {
         let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined 
           || this.state.selectedBuilding.floors === null) ? [] : this.state.selectedBuilding.floors;
-        let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room => ({"key": room.name, ...room.location})) : []
+        let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
+        {
+          let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
+          return {
+          "key": room.name,
+          "opacity": 0.9,
+          "text": room.name + "\n" + values[1],
+          "fill": values[0],
+          ...room.location}}
+        ) : []
+
         return (
           <Grid container direction="column" spacing={5}>
             <Grid item>
