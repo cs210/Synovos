@@ -29,7 +29,7 @@ const connectionURI = 'mongodb+srv://backenduser:fXgre5eVj1R6CA76@cluster0-sh7sn
 mongoose.connect(connectionURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.once('open', function(){
-    console.log("MongoDB databse connection established successfully");
+    console.log("MongoDB database connection established successfully");
 });
 db.on('error', (error) => console.log(error));
 
@@ -64,12 +64,13 @@ app.use(bodyParser.json());
 app.set('view engine', 'jade');
 
 app.get('/', function (request, response) {
-    response.sendFile(__dirname + '/public/home.html');
-});
-
-app.get('/login', function (request, response) {
+    //response.sendFile(__dirname + '/public/home.html');
     response.sendFile(__dirname + '/public/index.html');
 });
+
+//app.get('/login', function (request, response) {
+//    response.sendFile(__dirname + '/public/index.html');
+//});
 //app.use('/static', express.static(__dirname + 'public/index.html'))
 
 //app.get('/', function (req, res) {
