@@ -89,7 +89,9 @@ class Onboarding extends React.Component {
   }
 
   handleFinishedWithJsonPart = () => {
-    this.setState({showFloorMapOnboarding: true});
+    if (Object.keys(this.state.jsonData).length !== 0) {
+      this.setState({showFloorMapOnboarding: true});
+    }
   }
 
   handleFinishedWithAllOnboarding = (event) => {
@@ -178,7 +180,7 @@ class Onboarding extends React.Component {
             onRoomSelect={this.handleRoomSelect}
           />
         :
-        <Grid container justify="center" alignItems="center" direction="column" spacing={5}>
+        <Grid container alignItems="center" direction="column" spacing={5}>
         <Grid item>
         <form onSubmit={this.handleSubmit}>
           <Autocomplete
