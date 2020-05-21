@@ -93,7 +93,6 @@ class FinishSelectRoomStep extends React.Component {
     return(
       <Grid container direction="column" spacing={5}>
         <Grid item>
-          <div>
             <Typography variant="h6">
               {`Adjust the location of room ${this.props.currentRoom}.`}
             </Typography>
@@ -102,7 +101,6 @@ class FinishSelectRoomStep extends React.Component {
               onClick={() => {this.child.getRooms()}}>
                 Finished
             </Button>
-          </div>
         </Grid>
         <Grid item>
           <FloorMap
@@ -111,7 +109,6 @@ class FinishSelectRoomStep extends React.Component {
             currentFloorMap={this.props.currentFloorMapPicture}
             rooms={this.props.rooms}
             onRoomSelectFinish={this.props.onRoomSelectFinish}
-            draggable={true}
           />
         </Grid>
       </Grid>
@@ -188,7 +185,10 @@ class OnboardingFloorMap extends React.Component {
         y: room.y,
         width: room.width,
         height: room.height,
-        key: this.rooms[this.state.currentRoomsIdx][2]
+        key: this.rooms[this.state.currentRoomsIdx][2],
+        opacity: 0.25,
+        fill: "black",
+        draggable: true,
     })
     this.setState({currentStep: "finishSelectRoom"})
   }
@@ -209,7 +209,10 @@ class OnboardingFloorMap extends React.Component {
         y: room.y,
         width: room.width,
         height: room.height,
-        key: this.rooms[this.state.currentRoomsIdx][2]
+        key: this.rooms[this.state.currentRoomsIdx][2],
+        opacity: 0.25,
+        fill: "black",
+        draggable: false,
     })
 
     let oldBuildingandFloor = [this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1]]

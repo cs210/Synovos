@@ -4,7 +4,7 @@ import {
     Button
 } from '@material-ui/core';
 import { render } from 'react-dom';
-import { Stage, Layer, Rect, Text, Image, Label, Group } from 'react-konva';
+import { Stage, Layer, Rect, Text, Image, Label, Group, Transformer } from 'react-konva';
 import Konva from 'konva';
 import update from 'immutability-helper'
 import PropTypes from 'prop-types';
@@ -67,12 +67,24 @@ class URLImage extends React.Component {
 class RoomHighlight extends React.Component {
   constructor(props) {
     super(props)
+    this.shapeRef = React.createRef();
+    this.trRef = React.createRef();
+
   }
+
+  componentDidMount() {
+    if (this.props.draggable) {
+      this.trRef.current.setNode(this.shapeRef.current);
+      this.trRef.current.getLayer().batchDraw();
+    }
+  }
+
 
   render() {
     return (
-      <Group>
+      <React.Fragment>
       <Rect
+        ref={this.shapeRef}
         x={this.props.x}
         y={this.props.y}
         width={this.props.width}
@@ -83,13 +95,38 @@ class RoomHighlight extends React.Component {
         stroke = "black"
         strokeWidth= {1}
         onDragEnd={this.props.onDragEnd}
+        onTransformEnd={e => {
+          console.log("Transforming is finishedd!!!");
+          const node = this.shapeRef.current;
+          const scaleX = node.scaleX();
+          const scaleY = node.scaleY();
+
+          node.scaleX(1);
+          node.scaleY(1);
+          this.props.onDragEnd({target: {
+            attrs: {
+              x: node.x(),
+              y: node.y(),
+              width: Math.max(5, node.width() * scaleX),
+              height: Math.max(node.height() * scaleY)}}})
+        }}
       />
       <Text 
         x={this.props.x + (this.props.width * .20)}
         y={this.props.y + (this.props.height * .20)}
         fontStyle="bold"
         text={this.props.text}/>
-      </Group>
+
+      {this.props.draggable && <Transformer
+          ref={this.trRef}
+          boundBoxFunc={(oldBox, newBox) => {
+            if (newBox.width < 5 || newBox.height < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
+      /> }
+      </React.Fragment>
     );
   }
 }
@@ -121,6 +158,7 @@ class FloorMap extends React.Component {
       fill: "black",
       opacity: 0.25,
       text: "",
+      draggable: false,
     }
   };
 
@@ -215,27 +253,27 @@ class FloorMap extends React.Component {
             width={this.state.stageWidth}
             height={this.state.stageHeight} />
 
-          {whichRooms.map(({ height, width, x, y , key, fill, opacity, text}) => (
+          {whichRooms.map(({ height, width, x, y , key, fill, opacity, text, draggable}) => (
             <RoomHighlight
               key={key}
               height={this.state.stageHeight * height}
               width={this.state.stageWidth * width}
               x={this.state.stageWidth * x}
               y={this.state.stageHeight * y}
-              draggable={false}
               fill={fill}
               opacity={opacity}
               text={text}
-              draggable={this.props.draggable}
+              draggable={draggable}
               onDragEnd={e => {
                 this.setState((prevState) => ({
                   rooms: update(prevState.rooms, {$splice: [[-1, 1]]})
-                }))
+                }));
+                let newRect = this.newRectangle(e.target.attrs.x / this.state.stageWidth, e.target.attrs.y / this.state.stageHeight,
+                                                      e.target.attrs.width / this.state.stageWidth, e.target.attrs.height / this.state.stageHeight);
+                newRect.draggable = true
 
                 this.setState(prevState => ({
-                  rooms: [...prevState.rooms, 
-                                    this.newRectangle(e.target.attrs.x / this.state.stageWidth, e.target.attrs.y / this.state.stageHeight,
-                                                      e.target.attrs.width / this.state.stageWidth, e.target.attrs.height / this.state.stageHeight) ]
+                  rooms: [...prevState.rooms, newRect]
                 }));
               }}
             />
@@ -255,11 +293,7 @@ FloorMap.propTypes = {
     rooms: PropTypes.arrayOf(PropTypes.object),
     onRoomSelect: PropTypes.func,
     onRoomSelectFinish: PropTypes.func,
-    draggable: PropTypes.bool
 }
 
-FloorMap.defaultProps = {
-    draggable: false,
-}
 
 export default FloorMap;
