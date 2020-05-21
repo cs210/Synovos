@@ -1,9 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../schema/user.js');
+const Building = require('../schema/building.model');
+const OccupancyData = require('../schema/occupancyData.model');
+
 const ObjectId = require('mongoose').Types.ObjectId;
 
+var async = require('async');
+
 var app = express();
+
+// Use bodyParser for JSON
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 // Import functions from hashpasswords.js to hash passwords
 var encryption = require('../modelData/hashpasswords.js');
@@ -55,8 +64,8 @@ router.post('/login', function (request, response) {
  * Delete all data associate with one account
  */
 router.post('/delete', function(request, response){
-    console.log('delete user has been called')
-    user_id = request.session.user_id
+    console.log('delete user has been called');
+    user_id = request.session.user_id;
     // Find Photo with the right id and ind insert the comment
     User.deleteOne({_id: user_id} , function (err, info) {
         if (err) {
@@ -71,10 +80,62 @@ router.post('/delete', function(request, response){
             response.status(400).send('Not found');
             return;
         }
-        console.log("delete user model");
-        console.log(info);
-        response.status(200).send(true);
-        // Find all associated data
+
+        Building.find({user_id: user_id} , function (err, info) {
+            if (err) {
+                // Query returned an error.  We pass it back to the browser with an Internal Service
+                // Error (500) error code.
+                console.error('Doing /deleteUser/' + user_id + ' with error:', err);
+                response.status(500).send(JSON.stringify(err));
+                return;
+            }
+
+            var temp_building = JSON.parse(JSON.stringify(info));
+
+            // OccupancyData.deleteMany is an asynchronous function. async each is basically a for (element in object)
+            // loop that runs synchronously.
+            // What this loop does: Finds all rooms and deletes associated OccupancyData.
+            async.each(temp_building, function(building, done_callback) {
+                async.each(building.floors, function(floor, done_callback) {
+                    async.each(floor.rooms, function (room, done_callback) {
+                        OccupancyData.deleteMany({room_id: room._id} , function (err, info) {
+                            if (err) {
+                                console.error('Doing /deleteUser/' + user_id + ' with error:', err);
+                                response.status(500).send(JSON.stringify(err));
+                                return;
+                            }
+                            console.log("Delete Occupancy")
+                            console.log(info);
+                            done_callback(err);
+                        });
+                    }, function (err) {
+                        done_callback(err);
+                    });
+                }, function(err){
+                    done_callback(err);
+                });
+            }, function(err){
+                if (err) {
+                    response.status(500).send(JSON.stringify(err));
+                } else{
+                    // One we delete all Occupancy data, we can delete all buildings associated with the user
+                    // + the user themselves
+                    Building.deleteMany({user_id: user_id} , function (err, info) {
+                        if (err) {
+                            // Query returned an error.  We pass it back to the browser with an Internal Service
+                            // Error (500) error code.
+                            console.error('Doing /deleteUser/' + user_id + ' with error:', err);
+                            response.status(500).send(JSON.stringify(err));
+                            return;
+                        }
+
+                        console.log("delete user model");
+                        console.log(info);
+                        response.status(200).send(true);
+                    });
+                }
+            });
+        });
     });
 });
 
