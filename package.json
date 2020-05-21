@@ -4,7 +4,8 @@
   "description": "CS142 Project #6 - Appserver and Database (React)",
   "main": "index.html",
   "scripts": {
-    "start": "npm start",
+    "start": "node webServer.js",
+    "start:eb": "npm run build && npm start",
     "build": "node_modules/.bin/webpack -d",
     "build:w": "node_modules/.bin/webpack -d --watch",
     "lint": "node_modules/.bin/eslint webServer.js loadDatabase.js *.jsx components/*/*.jsx lib/*.js"
