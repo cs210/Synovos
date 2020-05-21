@@ -19,12 +19,12 @@ class Onboarding extends React.Component {
                   floorName: '',
                   roomName: '',
                   sensorName: '',
-                  jsonData: {"a":{"s":{"f":["e"]}}},
+                  jsonData: {},
                   buildingOptions: [],
                   floorOptions: [],
                   roomOptions: [],
                   sensorOptions: [],
-                  showFloorMapOnboarding: true,
+                  showFloorMapOnboarding: false,
                  };
 
     this.handleBuildingChange = this.handleBuildingChange.bind(this);

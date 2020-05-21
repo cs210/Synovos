@@ -82,6 +82,7 @@ class RoomHighlight extends React.Component {
         draggable={this.props.draggable}
         stroke = "black"
         strokeWidth= {1}
+        onDragEnd={this.props.onDragEnd}
       />
       <Text 
         x={this.props.x + (this.props.width * .20)}
@@ -99,7 +100,7 @@ class FloorMap extends React.Component {
     super(props);
     this.state = {
                     stageWidth: 200,
-                    stageHeight: 400,
+                    stageHeight: props.mode == "heatmap" ? 400 : 600,
                     rooms: this.props.rooms,
                  };
 
@@ -158,12 +159,14 @@ class FloorMap extends React.Component {
     }
   }
 
+  getRooms = (event) => {
+    this.props.onRoomSelectFinish(event, this.state.rooms[this.state.rooms.length - 1])
+  }
+
   handleMouseUp = (event) => {
     if (this.props.mode == "onboarding") {
       this.isDrawing = false;
       this.props.onRoomSelect(event, this.state.rooms[this.state.rooms.length - 1])
-    } else if (this.props.mode === "adjusting") {
-      this.props.onRoomSelectFinish(event, this.state.rooms[this.state.rooms.length - 1])
     }
   }
 
@@ -223,6 +226,18 @@ class FloorMap extends React.Component {
               fill={fill}
               opacity={opacity}
               text={text}
+              draggable={this.props.draggable}
+              onDragEnd={e => {
+                this.setState((prevState) => ({
+                  rooms: update(prevState.rooms, {$splice: [[-1, 1]]})
+                }))
+
+                this.setState(prevState => ({
+                  rooms: [...prevState.rooms, 
+                                    this.newRectangle(e.target.attrs.x / this.state.stageWidth, e.target.attrs.y / this.state.stageHeight,
+                                                      e.target.attrs.width / this.state.stageWidth, e.target.attrs.height / this.state.stageHeight) ]
+                }));
+              }}
             />
             ))}
         </Layer>
@@ -240,6 +255,11 @@ FloorMap.propTypes = {
     rooms: PropTypes.arrayOf(PropTypes.object),
     onRoomSelect: PropTypes.func,
     onRoomSelectFinish: PropTypes.func,
+    draggable: PropTypes.bool
+}
+
+FloorMap.defaultProps = {
+    draggable: false,
 }
 
 export default FloorMap;

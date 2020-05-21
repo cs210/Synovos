@@ -53,13 +53,15 @@ class SelectRoomStep extends React.Component {
     }
 
     return(
-      <Grid container direction="column" justify="center" alignItems="center" spacing={5}>
+      <Grid container direction="column" spacing={5}>
         <Grid item>
+          <Grid container justify = "center">
           <Typography variant="h6">
             {`Click and drag to select the room ${this.props.currentRoom}.`}
           </Typography>
+          </Grid>
         </Grid>
-        <Grid item style={{flexGrow: 1}}>
+        <Grid item >
           <FloorMap
             mode={"onboarding"}
             currentFloorMap={this.props.currentFloorMapPicture}
@@ -97,7 +99,7 @@ class FinishSelectRoomStep extends React.Component {
             </Typography>
             <Button
               variant="contained"
-              onClick={() => {this.child.handleMouseUp()}}>
+              onClick={() => {this.child.getRooms()}}>
                 Finished
             </Button>
           </div>
@@ -109,6 +111,7 @@ class FinishSelectRoomStep extends React.Component {
             currentFloorMap={this.props.currentFloorMapPicture}
             rooms={this.props.rooms}
             onRoomSelectFinish={this.props.onRoomSelectFinish}
+            draggable={true}
           />
         </Grid>
       </Grid>
