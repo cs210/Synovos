@@ -92,15 +92,19 @@ class FinishSelectRoomStep extends React.Component {
 
     return(
       <Grid container direction="column" spacing={5}>
-        <Grid item>
+        <Grid container direction="row" justify="space-between" item>
+          <Grid item>
             <Typography variant="h6">
               {`Adjust the location of room ${this.props.currentRoom}.`}
             </Typography>
+          </Grid>
+          <Grid item>
             <Button
               variant="contained"
               onClick={() => {this.child.getRooms()}}>
                 Finished
             </Button>
+          </Grid>
         </Grid>
         <Grid item>
           <FloorMap
