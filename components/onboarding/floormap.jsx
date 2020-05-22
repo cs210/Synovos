@@ -82,7 +82,10 @@ class RoomHighlight extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Group
+      draggable={this.props.draggable}
+      onDragEnd={this.props.onDragEnd}
+      >
       <Rect
         ref={this.shapeRef}
         x={this.props.x}
@@ -91,10 +94,8 @@ class RoomHighlight extends React.Component {
         height={this.props.height}
         fill={this.props.fill}
         opacity={this.props.opacity}
-        draggable={this.props.draggable}
         stroke = "black"
         strokeWidth= {1}
-        onDragEnd={this.props.onDragEnd}
         onTransformEnd={e => {
           console.log("Transforming is finishedd!!!");
           const node = this.shapeRef.current;
@@ -103,7 +104,7 @@ class RoomHighlight extends React.Component {
 
           node.scaleX(1);
           node.scaleY(1);
-          this.props.onDragEnd({target: {
+          this.props.onTransformEnd({target: {
             attrs: {
               x: node.x(),
               y: node.y(),
@@ -126,7 +127,7 @@ class RoomHighlight extends React.Component {
             return newBox;
           }}
       /> }
-      </React.Fragment>
+      </Group>
     );
   }
 }
@@ -268,9 +269,25 @@ class FloorMap extends React.Component {
                 this.setState((prevState) => ({
                   rooms: update(prevState.rooms, {$splice: [[-1, 1]]})
                 }));
+                let newRect = this.newRectangle(x + (e.target.attrs.x / this.state.stageWidth), y + (e.target.attrs.y / this.state.stageHeight),
+                                                      width, height);
+                newRect.draggable = true
+                newRect.fill = "green"
+                newRect.text = text
+
+                this.setState(prevState => ({
+                  rooms: [...prevState.rooms, newRect]
+                }));
+              }}
+              onTransformEnd={e => {
+                this.setState((prevState) => ({
+                  rooms: update(prevState.rooms, {$splice: [[-1, 1]]})
+                }));
                 let newRect = this.newRectangle(e.target.attrs.x / this.state.stageWidth, e.target.attrs.y / this.state.stageHeight,
                                                       e.target.attrs.width / this.state.stageWidth, e.target.attrs.height / this.state.stageHeight);
                 newRect.draggable = true
+                newRect.fill = "green"
+                newRect.text = text
 
                 this.setState(prevState => ({
                   rooms: [...prevState.rooms, newRect]
