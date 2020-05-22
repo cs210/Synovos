@@ -92,15 +92,19 @@ class FinishSelectRoomStep extends React.Component {
 
     return(
       <Grid container direction="column" spacing={5}>
-        <Grid item>
+        <Grid container direction="row" justify="space-between" item>
+          <Grid item>
             <Typography variant="h6">
               {`Adjust the location of room ${this.props.currentRoom}.`}
             </Typography>
+          </Grid>
+          <Grid item>
             <Button
               variant="contained"
               onClick={() => {this.child.getRooms()}}>
                 Finished
             </Button>
+          </Grid>
         </Grid>
         <Grid item>
           <FloorMap
@@ -187,8 +191,9 @@ class OnboardingFloorMap extends React.Component {
         height: room.height,
         key: this.rooms[this.state.currentRoomsIdx][2],
         opacity: 0.25,
-        fill: "black",
+        fill: "green",
         draggable: true,
+        text: this.rooms[this.state.currentRoomsIdx][2],
     })
     this.setState({currentStep: "finishSelectRoom"})
   }
@@ -213,6 +218,7 @@ class OnboardingFloorMap extends React.Component {
         opacity: 0.25,
         fill: "black",
         draggable: false,
+        text: this.rooms[this.state.currentRoomsIdx][2],
     })
 
     let oldBuildingandFloor = [this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1]]
