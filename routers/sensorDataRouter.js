@@ -4,6 +4,13 @@ const SensorData = require('../schema/sensorData.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 router.get('/:id', (req, res)=>{
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        response.status(401).send('Unauthorized');
+        return;
+    }
+
     let id = req.params.id;
     let user_id = req.session.user_id; // will be used to find user-specific data
 
@@ -38,6 +45,13 @@ router.get('/:id', (req, res)=>{
 
 // Create one sensorData entry
 router.post('/', (req, res) => {
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        response.status(401).send('Unauthorized');
+        return;
+    }
+
     let {sensor_id, date, readings} = req.body;
     let user_id = req.session.user_id; // will be used to find user-specific data
 

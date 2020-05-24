@@ -2,21 +2,6 @@
 
 /* jshint node: true */
 
-/*
- * To start the webserver run the command:
- *    node webServer.js
- *
- * Note that anyone able to connect to localhost:portNo will be able to fetch any file accessible
- * to the current user in the current directory or any of its children.
- *
- * This webServer exports the following URLs:
- * /              -  Returns a text status message.  Good for testing web server running.
- * /test/info     -  Returns the SchemaInfo object from the database (JSON format).
- * /admin/Logout
- * /admin/login
- * /user
- */
-
 const PORT = process.env.HTTP_PORT || 8081;
 
 // We use the Mongoose to define the schema stored in MongoDB.
@@ -56,11 +41,6 @@ app.use(session({
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-
-// Use bodyParser for JSON
-//app.use(bodyParser.json());
-//app.use(express.static('public'));
-//app.use('/',express.static(__dirname + 'public/'));
 app.set('view engine', 'jade');
 
 app.get('/', function (request, response) {
@@ -70,42 +50,6 @@ app.get('/', function (request, response) {
 
 app.get('/login', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
-});
-//app.use('/static', express.static(__dirname + 'public/index.html'))
-
-//app.get('/', function (req, res) {
-//  res.render(../public/index.html, {});
-//});
-
-/*
- * Use express to handle argument passing in the URL.  This .get will cause express
- * /test/info - Return the SchemaInfo object of the database in JSON format. This
- *                       is good for testing connectivity with  MongoDB.
- */
-app.get('/test/info', function (request, response) {
-    // Express parses the ":p1" from the URL and returns it in the request.params objects.
-    console.log('/test/info called');
-
-    // Fetch the SchemaInfo. There should only one of them. The query of {} will match it.
-    SchemaInfo.find({}, function (err, info) {
-        if (err) {
-            // Query returned an error.  We pass it back to the browser with an Internal Service
-            // Error (500) error code.
-            console.error('Doing /user/info error:', err);
-            response.status(500).send(JSON.stringify(err));
-            return;
-        }
-        if (info.length === 0) {
-            // Query didn't return an error but didn't find the SchemaInfo object - This
-            // is also an internal error return.
-            response.status(500).send('Missing SchemaInfo');
-            return;
-        }
-
-        // We got the object - return it in JSON format.
-        response.send(JSON.stringify(info[0]));
-    });
-
 });
 
 const buildingsRouter = require('./routers/buildingsRouter');
