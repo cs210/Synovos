@@ -11,6 +11,13 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * - end_date: end date for data query, not inclusive
  */
 router.get('/', (req, res) => {
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        response.status(401).send('Unauthorized');
+        return;
+    }
+
     let user_id = req.session.user_id; // will be used to find user-specific data
 
     let { room_ids, start_date, end_date } = req.query;
@@ -62,6 +69,13 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res)=>{
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        response.status(401).send('Unauthorized');
+        return;
+    }
+
     let id = req.params.id;
     let user_id = req.session.user_id; // will be used to find user-specific data
 
@@ -94,6 +108,13 @@ router.get('/:id', (req, res)=>{
 
 // Create one sensorData entry
 router.post('/', (req, res) => {
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        response.status(401).send('Unauthorized');
+        return;
+    }
+
     let {room_id, date, readings} = req.body;
     let user_id = req.session.user_id; // will be used to find user-specific data
 
