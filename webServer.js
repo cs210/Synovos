@@ -45,12 +45,13 @@ app.set('view engine', 'jade');
 
 app.get('/', function (request, response) {
     //response.sendFile(__dirname + '/public/home.html');
-    response.sendFile(__dirname + '/public/index.html');
+    response.sendFile(__dirname + '/public/home.html');
 });
 
 app.get('/login', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
 });
+
 
 const buildingsRouter = require('./routers/buildingsRouter');
 app.use('/buildings', buildingsRouter);
