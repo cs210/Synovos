@@ -126,7 +126,7 @@ class Onboarding extends React.Component {
           }
 
           // TODO: For this room, we should upload temparature and co2 data
-          
+          console.log(roomPayload)
 
           floorPayload["rooms"].push(roomPayload)
         }
@@ -155,6 +155,7 @@ class Onboarding extends React.Component {
   }
 
   handleRoomSelect = (building, floor, room, location) => {
+    console.log(this.state.jsonData)
     this.setState(prevState => ({
       ...prevState,
       jsonData: {
@@ -170,10 +171,12 @@ class Onboarding extends React.Component {
           }
         }
       }
-    }))
+    }), () => {console.log(this.state.jsonData)})
   }
 
   handleRoomUploadData = (building, floor, room, temperature_data, co2_data) => {
+    console.log("Uploard room data")
+    console.log(this.state.jsonData)
     this.setState(prevState => ({
       ...prevState,
       jsonData: {
@@ -190,7 +193,7 @@ class Onboarding extends React.Component {
           }
         }
       }
-    }))
+    }), () => {console.log(this.state.jsonData)})
   }
 
   render() {

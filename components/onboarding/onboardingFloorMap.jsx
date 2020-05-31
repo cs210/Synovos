@@ -87,6 +87,19 @@ SelectRoomStep.propTypes = {
 
 
 class FinishSelectRoomStep extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      resetKey: ""
+    };
+  }
+
+  handleReset = (event) => {
+    this.setState({
+      resetKey: this.state.resetKey + "0"
+    });
+  }
+
   render() {
     if (this.props.currentStep !== "finishSelectRoom") {
       return null
@@ -103,6 +116,11 @@ class FinishSelectRoomStep extends React.Component {
           <Grid item>
             <Button
               variant="contained"
+              onClick={this.handleReset}>
+                Reset
+            </Button>
+            <Button
+              variant="contained"
               onClick={() => {this.child.getRooms()}}>
                 Finished
             </Button>
@@ -110,6 +128,7 @@ class FinishSelectRoomStep extends React.Component {
         </Grid>
         <Grid item>
           <FloorMap
+            key={this.state.resetKey}
             ref={Ref => this.child=Ref }
             mode={"adjusting"}
             currentFloorMap={this.props.currentFloorMapPicture}

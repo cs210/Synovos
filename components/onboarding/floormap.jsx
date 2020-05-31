@@ -225,7 +225,7 @@ class FloorMap extends React.Component {
       this.setState(prevState => ({
         rooms: [...prevState.rooms,
                           this.newRectangle(this.originalX / this.state.stageWidth, this.originalY / this.state.stageHeight,
-                                         (pos.x - this.originalX) / this.state.stageWidth, (pos.y - this.originalY) / this.state.stageHeight) ]
+                                         ((pos.x - this.originalX) > 3 ? (pos.x - this.originalX) : 3) / this.state.stageWidth, ((pos.y - this.originalY) > 3 ? (pos.y - this.originalY) : 3) / this.state.stageHeight) ]
       }));
     }
   }
