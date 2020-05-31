@@ -116,7 +116,7 @@ class Onboarding extends React.Component {
             "location": this.state.jsonData[building][floor][room].location
           }
           for (const sensor in this.state.jsonData[building][floor][room]) {
-            if (sensor == "location") {
+            if (sensor == "location" || sensor == "temperature_data" || sensor == "co2_data") {
               continue
             }
             let sensorPayload = {
@@ -124,6 +124,10 @@ class Onboarding extends React.Component {
             }
             roomPayload["sensors"].push(sensorPayload)
           }
+
+          // TODO: For this room, we should upload temparature and co2 data
+          
+
           floorPayload["rooms"].push(roomPayload)
         }
         buildingPayload["floors"].push(floorPayload)
@@ -169,6 +173,26 @@ class Onboarding extends React.Component {
     }))
   }
 
+  handleRoomUploadData = (building, floor, room, temperature_data, co2_data) => {
+    this.setState(prevState => ({
+      ...prevState,
+      jsonData: {
+        ...prevState.jsonData,
+        [building]: {
+          ...prevState.jsonData[building],
+          [floor]: {
+            ...prevState.jsonData[building][floor],
+            [room]: {
+              ...prevState.jsonData[building][room],
+              temperature_data: temperature_data,
+              co2_data: co2_data,
+            }
+          }
+        }
+      }
+    }))
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -178,6 +202,7 @@ class Onboarding extends React.Component {
             onFloorMapUpload={this.handleFloorMapUpload}
             onFinishOnboarding={this.handleFinishedWithAllOnboarding}
             onRoomSelect={this.handleRoomSelect}
+            onRoomUploadData={this.handleRoomUploadData}
           />
         :
         <Grid container alignItems="center" direction="column" spacing={5}>

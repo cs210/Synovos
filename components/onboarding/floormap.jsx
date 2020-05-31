@@ -119,6 +119,7 @@ class RoomHighlight extends React.Component {
         text={this.props.text}/>
 
       {this.props.draggable && <Transformer
+          keepRatio={false}
           ref={this.trRef}
           boundBoxFunc={(oldBox, newBox) => {
             if (newBox.width < 5 || newBox.height < 5) {

@@ -10,6 +10,8 @@ import { Stage, Layer, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 import FloorMap from './floormap'
 import PropTypes from 'prop-types';
+import Papa from 'papaparse';
+import Input from '@material-ui/core/Input';
 
 
 class UploadFloorMapStep extends React.Component {
@@ -129,6 +131,98 @@ FinishSelectRoomStep.propTypes = {
 }
 
 
+class UploadRoomDataStep extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      temperature_csvfile: undefined,
+      temperature_data: undefined,
+      co2_csvfile: undefined,
+      co2_data: undefined,
+    };
+  }
+
+  importTemperatureCSV = (event) => {
+    const csvfile = event.target.files[0];
+    this.setState({
+      temperature_csvfile: csvfile
+    });
+    Papa.parse(csvfile, {
+      complete: (result) => {
+          let data = result.data.slice(2)
+          this.setState({
+            temperature_data: data
+          });
+        },
+    });
+  };
+
+
+  importCo2CSV = (event) => {
+    const csvfile = event.target.files[0];
+    this.setState({
+      co2_csvfile: csvfile
+    });
+    Papa.parse(csvfile, {
+      complete: (result) => {
+          let data = result.data.slice(1)
+          this.setState({
+            co2_data: data
+          });
+        },
+    });
+  };
+
+
+  onUploadClick = (event) => {
+    this.props.onUploadData(this.state.temperature_data, this.state.co2_data)
+  }
+
+
+  render() {
+    if (this.props.currentStep !== "uploadRoomData") {
+      return null
+    }
+
+    return(
+      <React.Fragment>
+        <Typography variant="h6">
+          {`Import CSV temparature data for room  ${this.props.currentRoom}.`}
+        </Typography>
+        <Input
+          type="file"
+          ref={input => {
+            this.filesInput = input;
+          }}
+          name="file"
+          placeholder={null}
+          onChange={this.importTemperatureCSV}
+        />
+        <p />
+        <Typography variant="h6">
+          {`Import CSV CO2 data for room  ${this.props.currentRoom}.`}
+        </Typography>
+        <Input
+          type="file"
+          ref={input => {
+            this.filesInput = input;
+          }}
+          name="file"
+          placeholder={null}
+          onChange={this.importCo2CSV}
+        />
+        <p />
+        <Button
+          variant="contained"
+          onClick={this.onUploadClick}>
+          Continue
+        </Button>
+      </React.Fragment>
+    );
+  }
+}
+
+
 
 class ThankYouStep extends React.Component {
   render() {
@@ -167,7 +261,7 @@ class OnboardingFloorMap extends React.Component {
     for (const building in props.json) {
       for (const floor in props.json[building]) {
         for (const room in props.json[building][floor]) {
-          this.rooms.push([building, floor, room])
+          this.rooms.push([building, floor, room, props.json[building][floor][room]])
         }
       }
     }
@@ -179,9 +273,38 @@ class OnboardingFloorMap extends React.Component {
   handleImageUpload = (event) => {
     var pwd;
     while(pwd == null) pwd = prompt('Please enter the url to your floormap image.')
-    this.setState({currentFloorMapPicture: pwd, currentStep: "selectRoom"})
+    this.setState({currentFloorMapPicture: pwd})
     this.props.onFloorMapUpload(this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1], pwd)
+    this.nextStep()
   }
+
+
+  nextStep = () => {
+    if (this.state.currentStep === "uploadFloorMap") {
+      this.setState({currentStep: "selectRoom"})
+    } else if (this.state.currentStep === "selectRoom") {
+      this.setState({currentStep: "finishSelectRoom"})
+    } else if (this.state.currentStep === "finishSelectRoom") {
+      this.setState({currentStep: "uploadRoomData"})
+    } else if (this.state.currentStep === "uploadRoomData") {
+      let oldBuildingandFloor = [this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1]]
+
+      // Check if we are done
+      if (this.state.currentRoomsIdx + 1 === this.rooms.length) {
+        this.setState({currentStep: "thankYou"}, this.props.onFinishOnboarding)
+      } else {
+        this.setState({currentRoomsIdx: this.state.currentRoomsIdx + 1}, function() {
+          if (oldBuildingandFloor[0] != this.rooms[this.state.currentRoomsIdx][0] || oldBuildingandFloor[1] != this.rooms[this.state.currentRoomsIdx][1]) {
+            this.setState({currentStep: "uploadFloorMap"})
+            this.oldRooms = []
+          } else {
+            this.setState({currentStep: "selectRoom"})
+          }
+        })
+      }
+    }
+  }
+
 
   handleRoomSelect = (event, room) => {
     this.oldRooms.push({
@@ -195,7 +318,8 @@ class OnboardingFloorMap extends React.Component {
         draggable: true,
         text: this.rooms[this.state.currentRoomsIdx][2],
     })
-    this.setState({currentStep: "finishSelectRoom"})
+    
+    this.nextStep()
   }
 
 
@@ -221,20 +345,16 @@ class OnboardingFloorMap extends React.Component {
         text: this.rooms[this.state.currentRoomsIdx][2],
     })
 
-    let oldBuildingandFloor = [this.rooms[this.state.currentRoomsIdx][0], this.rooms[this.state.currentRoomsIdx][1]]
+    this.nextStep()
+  }
 
-    if (this.state.currentRoomsIdx === this.rooms.length - 1) {
-      this.setState({currentStep: "thankYou"}, this.props.onFinishOnboarding)
-    } else {
-      this.setState({currentRoomsIdx: this.state.currentRoomsIdx + 1}, function() {
-        if (oldBuildingandFloor[0] != this.rooms[this.state.currentRoomsIdx][0] || oldBuildingandFloor[1] != this.rooms[this.state.currentRoomsIdx][1]) {
-          this.setState({currentStep: "uploadFloorMap"})
-          this.oldRooms = []
-        } else {
-          this.setState({currentStep: "selectRoom"})
-        }
-      })
-    }
+
+  handleRoomUploadData = (temparature_data, co2_data) => {
+    this.props.onRoomUploadData(this.rooms[this.state.currentRoomsIdx][0],
+                                this.rooms[this.state.currentRoomsIdx][1],
+                                this.rooms[this.state.currentRoomsIdx][2],
+                                temparature_data, co2_data)
+    this.nextStep()
   }
 
 
@@ -263,6 +383,12 @@ class OnboardingFloorMap extends React.Component {
         currentFloorMapPicture={this.state.currentFloorMapPicture}
         rooms={this.oldRooms}
         onRoomSelectFinish={this.handleRoomSelectFinish}
+      />
+
+      <UploadRoomDataStep
+        currentStep={this.state.currentStep}
+        currentRoom={this.rooms[this.state.currentRoomsIdx][2]}
+        onUploadData={this.handleRoomUploadData}
       />
 
       <ThankYouStep
