@@ -46,11 +46,11 @@ class Listview extends React.Component {
             start_date.setHours(0, 0, 0, 0);
             let end_date = new Date(start_date.valueOf());
             end_date.setDate(end_date.getDate() + 1);
-            axios.get('/occupancyData', {
+            axios.get('/sensorData', {
                 params: {
                     room_ids: room_ids.join(','),
                     start_date: start_date,
-                    end_date: end_date
+                    end_date: end_date,
                 }
             }).then(result => {
                 if(result.status === 200 && Array.isArray(result.data.occupancyData)) {

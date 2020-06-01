@@ -13,7 +13,7 @@ const sensorDataSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         required: true
     },
-    sensorType: {
+    sensor_type: {
         type: String,
         enum: sensorTypes,
         require: true

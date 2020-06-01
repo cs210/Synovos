@@ -58,9 +58,6 @@ app.use('/buildings', buildingsRouter);
 const sensorDataRouter = require('./routers/sensorDataRouter');
 app.use('/sensorData', sensorDataRouter);
 
-const occupancyDataRouter = require('./routers/occupancyDataRouter');
-app.use('/occupancyData', occupancyDataRouter);
-
 const adminControls = require('./routers/adminControls');
 app.use('/admin', adminControls);
 
