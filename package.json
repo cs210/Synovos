@@ -33,6 +33,7 @@
     "moment": "^2.24.0",
     "mongoose": "^5.9.1",
     "nodemon": "^2.0.2",
+    "papaparse": "^5.2.0",
     "prismjs": "^1.15.0",
     "promise": "^8.0.2",
     "react": "^16.5.2",

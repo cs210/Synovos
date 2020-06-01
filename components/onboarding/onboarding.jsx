@@ -8,29 +8,24 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import OnboardingFloorMap from './onboardingFloorMap';
 import axios from "axios";
+import mongoose from 'mongoose';
 
 class Onboarding extends React.Component {
   constructor(props) {
-    /*
-    TODO: Should probably check that at least one sensor was added to the json
-    */
     super(props);
     this.state = {buildingName: '',
                   floorName: '',
                   roomName: '',
-                  sensorName: '',
                   jsonData: {},
                   buildingOptions: [],
                   floorOptions: [],
                   roomOptions: [],
-                  sensorOptions: [],
                   showFloorMapOnboarding: false,
                  };
 
     this.handleBuildingChange = this.handleBuildingChange.bind(this);
     this.handleFloorChange = this.handleFloorChange.bind(this);
     this.handleRoomChange = this.handleRoomChange.bind(this);
-    this.handleSensorChange = this.handleSensorChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.updateOptions = this.updateOptions.bind(this)
 
@@ -43,9 +38,6 @@ class Onboarding extends React.Component {
       this.setState({floorOptions: this.state.jsonData[this.state.buildingName] == undefined ? [] : Object.keys(this.state.jsonData[this.state.buildingName])});
       if (this.state.floorName != "") {
         this.setState({roomOptions: (this.state.jsonData[this.state.buildingName] != undefined && this.state.jsonData[this.state.buildingName][this.state.floorName] != undefined) ? Object.keys(this.state.jsonData[this.state.buildingName][this.state.floorName]) : []});
-        if (this.state.roomName != "") {
-          this.setState({sensorOptions: (this.state.jsonData[this.state.buildingName] != undefined && this.state.jsonData[this.state.buildingName][this.state.floorName] != undefined && this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] != undefined) ? this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] : []});
-        }
       }
     }
   }
@@ -62,9 +54,6 @@ class Onboarding extends React.Component {
     this.setState({roomName: value}, () => { this.updateOptions(); });
   }
 
-  handleSensorChange(event, value) {
-    this.setState({sensorName: value}, () => { this.updateOptions(); });
-  }
 
   handleSubmit(event) {
     event.preventDefault();
@@ -75,13 +64,8 @@ class Onboarding extends React.Component {
         this.state.jsonData[this.state.buildingName][this.state.floorName] = this.state.jsonData[this.state.buildingName] != undefined && this.state.jsonData[this.state.buildingName][this.state.floorName] != undefined ? this.state.jsonData[this.state.buildingName][this.state.floorName] : {};
         if (this.state.roomName != "") {
           if (this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] == undefined) {
-            this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = new Set();
+            this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = {};
           }
-          this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = new Set(this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName])
-          if (this.state.sensorName != ""){
-            this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName].add(this.state.sensorName)
-          }
-          this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = Array.from(this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName])
         }
       }
     }
@@ -93,6 +77,49 @@ class Onboarding extends React.Component {
       this.setState({showFloorMapOnboarding: true});
     }
   }
+
+  datesAreOnSameDay = (first, second) => {
+      return first.getFullYear() === second.getFullYear() &&
+             first.getMonth() === second.getMonth() &&
+             first.getDate() === second.getDate()
+  }
+
+
+  processSensorData = (data, room_id, sensor_type) => {
+    let entries = []
+    let currentTime = new Date(Date.parse(data[0][0]))
+    let currentEntry = {
+      "sensor_type": sensor_type,
+      "room_id": room_id,
+      "date": currentTime,
+      "readings": [],
+    }
+
+    for (let row of data) {
+      let time = new Date(Date.parse(row[0]))
+
+      if (this.datesAreOnSameDay(time, currentTime)) {
+        let reading = {
+          "time": time,
+          "data": parseFloat(row[2])
+        }    
+        currentEntry["readings"].push(reading)
+      } else {
+        entries.push(currentEntry)
+        currentTime = time
+        currentEntry = {
+          "sensor_type": sensor_type,
+          "room_id": room_id,
+          "date": time,
+          "readings": [],
+        }
+      }
+    }
+
+    return entries
+
+  }
+
 
   handleFinishedWithAllOnboarding = (event) => {
     for (const building in this.state.jsonData) {
@@ -110,20 +137,32 @@ class Onboarding extends React.Component {
           if (room == "img_url") {
             continue
           }
+
+          let room_id = mongoose.Types.ObjectId()
+
           let roomPayload = {
             "name": room,
-            "sensors": [],
+            "_id": room_id,
             "location": this.state.jsonData[building][floor][room].location
           }
-          for (const sensor in this.state.jsonData[building][floor][room]) {
-            if (sensor == "location") {
-              continue
+
+          if (this.state.jsonData[building][floor][room].temperature_data !== undefined) {
+            for (let sensorPayload of this.processSensorData(this.state.jsonData[building][floor][room].temperature_data, room_id, "Temperature")) {
+              let sensorUploadResponse = axios.post(
+                "/sensorData/", sensorPayload,
+                { withCredentials: true });
             }
-            let sensorPayload = {
-              "sensorType": sensor,
-            }
-            roomPayload["sensors"].push(sensorPayload)
           }
+
+          if (this.state.jsonData[building][floor][room].co2_data !== undefined) {
+            for (let sensorPayload of this.processSensorData(this.state.jsonData[building][floor][room].co2_data, room_id, "CO2")) {
+              let sensorUploadResponse = axios.post(
+                "/sensorData/", sensorPayload,
+                { withCredentials: true });
+            }
+          }
+
+
           floorPayload["rooms"].push(roomPayload)
         }
         buildingPayload["floors"].push(floorPayload)
@@ -160,8 +199,28 @@ class Onboarding extends React.Component {
           [floor]: {
             ...prevState.jsonData[building][floor],
             [room]: {
+              location: location,
               ...prevState.jsonData[building][room],
-              location: location
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  handleRoomUploadData = (building, floor, room, temperature_data, co2_data) => {
+    this.setState(prevState => ({
+      ...prevState,
+      jsonData: {
+        ...prevState.jsonData,
+        [building]: {
+          ...prevState.jsonData[building],
+          [floor]: {
+            ...prevState.jsonData[building][floor],
+            [room]: {
+              temperature_data: temperature_data,
+              co2_data: co2_data,
+              location: prevState.jsonData[building][floor][room].location,
             }
           }
         }
@@ -178,6 +237,7 @@ class Onboarding extends React.Component {
             onFloorMapUpload={this.handleFloorMapUpload}
             onFinishOnboarding={this.handleFinishedWithAllOnboarding}
             onRoomSelect={this.handleRoomSelect}
+            onRoomUploadData={this.handleRoomUploadData}
           />
         :
         <Grid container alignItems="center" direction="column" spacing={5}>
@@ -213,18 +273,8 @@ class Onboarding extends React.Component {
             value={this.state.roomName}
             style = {{width: 300}}
           />
-          <Autocomplete
-            freeSolo
-            options={this.state.sensorOptions}
-            renderInput={params => (
-              <TextField {...params} label="Sensor" margin="normal" variant="outlined" />
-            )}
-            onInputChange={this.handleSensorChange}
-            value={this.state.sensorName}
-            style = {{width: 300}}
-          />
           <div align="center">
-            <Button variant="contained" type="submit" value="Submit">Add Sensor</Button>
+            <Button variant="contained" type="submit" value="Submit">Add Room</Button>
           </div>
         </form>
         </Grid>

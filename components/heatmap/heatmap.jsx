@@ -147,7 +147,7 @@ class Heatmap extends React.Component {
             start_date.setHours(0, 0, 0, 0);
             let end_date = new Date(start_date.valueOf());
             end_date.setDate(end_date.getDate() + 1);
-            axios.get('/occupancyData', {
+            axios.get('/sensorData', {
                 params: {
                     room_ids: room_ids.join(','),
                     start_date: start_date,
@@ -155,6 +155,7 @@ class Heatmap extends React.Component {
                 }
             }).then(result => {
                 if(result.status === 200 && Array.isArray(result.data.occupancyData)) {
+                    console.log("successfully got occupancy data");
                     // creating an array of elements with values name, data for display
                     let data = this.state.selectedFloor.rooms.map(room => {
                         let id = room._id;
@@ -169,8 +170,6 @@ class Heatmap extends React.Component {
                             })
                         }
                     });
-                    console.log("Got occupancy data!!")
-                    console.log(data)
                     // checking one last time that we're in a valid state
                     if(this.state.selectedBuilding._id === selectedBuildingId
                         && this.state.selectedFloor._id ===selectedFloorId){
