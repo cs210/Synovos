@@ -64,9 +64,8 @@ class Onboarding extends React.Component {
         this.state.jsonData[this.state.buildingName][this.state.floorName] = this.state.jsonData[this.state.buildingName] != undefined && this.state.jsonData[this.state.buildingName][this.state.floorName] != undefined ? this.state.jsonData[this.state.buildingName][this.state.floorName] : {};
         if (this.state.roomName != "") {
           if (this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] == undefined) {
-            this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = new Set();
+            this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = {};
           }
-          this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName] = new Set(this.state.jsonData[this.state.buildingName][this.state.floorName][this.state.roomName])
         }
       }
     }
@@ -78,6 +77,49 @@ class Onboarding extends React.Component {
       this.setState({showFloorMapOnboarding: true});
     }
   }
+
+  datesAreOnSameDay = (first, second) => {
+      return first.getFullYear() === second.getFullYear() &&
+             first.getMonth() === second.getMonth() &&
+             first.getDate() === second.getDate()
+  }
+
+
+  processSensorData = (data, room_id, sensor_type) => {
+    let entries = []
+    let currentTime = new Date(Date.parse(data[0][0]))
+    let currentEntry = {
+      "sensor_type": sensor_type,
+      "room_id": room_id,
+      "date": currentTime,
+      "readings": [],
+    }
+
+    for (let row of data) {
+      let time = new Date(Date.parse(row[0]))
+
+      if (this.datesAreOnSameDay(time, currentTime)) {
+        let reading = {
+          "time": time,
+          "data": parseFloat(row[2])
+        }    
+        currentEntry["readings"].push(reading)
+      } else {
+        entries.push(currentEntry)
+        currentTime = time
+        currentEntry = {
+          "sensor_type": sensor_type,
+          "room_id": room_id,
+          "date": time,
+          "readings": [],
+        }
+      }
+    }
+
+    return entries
+
+  }
+
 
   handleFinishedWithAllOnboarding = (event) => {
     for (const building in this.state.jsonData) {
@@ -101,14 +143,25 @@ class Onboarding extends React.Component {
           let roomPayload = {
             "name": room,
             "_id": room_id,
-            "sensors": [],
             "location": this.state.jsonData[building][floor][room].location
           }
 
-          // TODO: Add sensors to this??
+          if (this.state.jsonData[building][floor][room].temperature_data !== undefined) {
+            for (let sensorPayload of this.processSensorData(this.state.jsonData[building][floor][room].temperature_data, room_id, "Temperature")) {
+              let sensorUploadResponse = axios.post(
+                "/sensorData/", sensorPayload,
+                { withCredentials: true });
+            }
+          }
 
-          // TODO: For this room, we should upload temparature and co2 data
-          console.log(roomPayload)
+          if (this.state.jsonData[building][floor][room].co2_data !== undefined) {
+            for (let sensorPayload of this.processSensorData(this.state.jsonData[building][floor][room].co2_data, room_id, "CO2")) {
+              let sensorUploadResponse = axios.post(
+                "/sensorData/", sensorPayload,
+                { withCredentials: true });
+            }
+          }
+
 
           floorPayload["rooms"].push(roomPayload)
         }
@@ -137,7 +190,6 @@ class Onboarding extends React.Component {
   }
 
   handleRoomSelect = (building, floor, room, location) => {
-    console.log(this.state.jsonData)
     this.setState(prevState => ({
       ...prevState,
       jsonData: {
@@ -147,18 +199,16 @@ class Onboarding extends React.Component {
           [floor]: {
             ...prevState.jsonData[building][floor],
             [room]: {
+              location: location,
               ...prevState.jsonData[building][room],
-              location: location
             }
           }
         }
       }
-    }), () => {console.log(this.state.jsonData)})
+    }))
   }
 
   handleRoomUploadData = (building, floor, room, temperature_data, co2_data) => {
-    console.log("Uploard room data")
-    console.log(this.state.jsonData)
     this.setState(prevState => ({
       ...prevState,
       jsonData: {
@@ -168,14 +218,14 @@ class Onboarding extends React.Component {
           [floor]: {
             ...prevState.jsonData[building][floor],
             [room]: {
-              ...prevState.jsonData[building][room],
               temperature_data: temperature_data,
               co2_data: co2_data,
+              location: prevState.jsonData[building][floor][room].location,
             }
           }
         }
       }
-    }), () => {console.log(this.state.jsonData)})
+    }))
   }
 
   render() {
