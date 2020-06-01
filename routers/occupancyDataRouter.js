@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const OccupancyData = require('../schema/occupancyData.model');
+const OccupancyData = require('../schema/sensorData.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const sensorTypes = ["CO2", "Temperature", "Occupancy"]
+
 const dataReadingSchema = new mongoose.Schema({
     time: Date,
     data: Number
@@ -7,9 +9,14 @@ const dataReadingSchema = new mongoose.Schema({
 
 // Schema storing sensor data for one day for one sensor
 const sensorDataSchema = new mongoose.Schema({
-    sensor_id: {
+    room_id: {
         type: mongoose.Schema.Types.ObjectID,
         required: true
+    },
+    sensorType: {
+        type: String,
+        enum: sensorTypes,
+        require: true
     },
     date: {
         type: Date,
