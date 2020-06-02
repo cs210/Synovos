@@ -223,7 +223,7 @@ class Heatmap extends React.Component {
         let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined
           || this.state.selectedBuilding.floors === null) ? [] : this.state.selectedBuilding.floors;
         let sensors = (this.state.selectedFloor === '' || this.state.selectedFloor === undefined
-          || this.state.selectedFloor === null) ? [] :[];
+          || this.state.selectedFloor === null) ? [] :this.state.selectedFloor.rooms;
         let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
         {
           let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
