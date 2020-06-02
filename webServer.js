@@ -48,7 +48,7 @@ app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/home.html');
 });
 
-app.get('/login', function (request, response) {
+app.get('/login/', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
 });
 

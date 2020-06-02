@@ -20,7 +20,7 @@ function App() {
               color = "primary"
               className="sign-in"
               >
-              <a href="/login">
+              <a href="login#/login">
               SIGN IN
               </a>
               </Button>
@@ -31,7 +31,7 @@ function App() {
               color="primary"
               className="sign-up"
               >
-              <a href="/register">
+              <a href="login#/register">
               SIGN UP
               </a>
               </Button>

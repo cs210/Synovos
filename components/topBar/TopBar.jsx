@@ -49,7 +49,7 @@ class TopBar extends React.Component {
         else{
             return(
                 <Typography variant="h5" color="inherit">
-                    Please Log in
+                    Please Log In
                 </Typography>
             );
         }
@@ -61,7 +61,7 @@ class TopBar extends React.Component {
                 <Toolbar>
                     <section>
                         <Typography variant="h5" color="inherit">
-                            {"Predictivity"}
+                            {"Predictivity.io"}
                         </Typography>
                     </section>
                     <section className="app-bar-right">
