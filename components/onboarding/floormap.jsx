@@ -112,7 +112,7 @@ class RoomHighlight extends React.Component {
               height: Math.max(node.height() * scaleY)}}})
         }}
       />
-      <Text 
+      <Text
         x={this.props.x + (this.props.width * .20)}
         y={this.props.y + (this.props.height * .20)}
         fontStyle="bold"
@@ -138,10 +138,10 @@ class FloorMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-                    stageWidth: 200,
-                    stageHeight: props.mode == "heatmap" ? 400 : 600,
-                    rooms: this.props.rooms,
-                 };
+      stageWidth: 200,
+      stageHeight: props.mode == "heatmap" ? 400 : 600,
+      rooms: this.props.rooms,
+   };
 
     this.stageRef = React.createRef();
     this.layerRef = React.createRef();

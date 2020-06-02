@@ -18,9 +18,6 @@ class Sidebar extends React.Component {
     render() {
         return (
             <div>
-                <Typography variant="h5">
-                    Dashboard Items:
-                </Typography>
                 <List component="nav">
                     <ListItem key={1} button >
                         <NavLink

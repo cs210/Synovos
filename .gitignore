@@ -1,3 +1,5 @@
 node_modules/
 .idea/
 *.DS_Store
+index.bundle.js
+home.bundle.js
