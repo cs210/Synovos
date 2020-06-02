@@ -227,8 +227,8 @@ class Heatmap extends React.Component {
         let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
         {
           let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
-          let sensorType = "[Sensor Type]";
-          let sensorValue = values[1]; // Temporary;
+          let sensorType = "Occupancy"; // Hardcoded for now
+          let sensorValue = values[1]; // Temporary
           return {
           "key": room.name,
           "opacity": 0.9,
