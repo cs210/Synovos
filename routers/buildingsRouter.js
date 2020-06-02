@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     // Check if there is a session -- User logged in
     if (!req.session.login_name){
         console.log('User not logged in');
-        response.status(401).send('Unauthorized');
+        res.status(401).send('Unauthorized');
         return;
     }
 
@@ -60,7 +60,7 @@ router.get('/:id', (req, res)=>{
     // Check if there is a session -- User logged in
     if (!req.session.login_name){
         console.log('User not logged in');
-        response.status(401).send('Unauthorized');
+        res.status(401).send('Unauthorized');
         return;
     }
 
@@ -100,7 +100,7 @@ router.post('/', (req, res) => {
     // Check if there is a session -- User logged in
     if (!req.session.login_name){
         console.log('User not logged in');
-        response.status(401).send('Unauthorized');
+        res.status(401).send('Unauthorized');
         return;
     }
 
