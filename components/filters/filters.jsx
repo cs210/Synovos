@@ -69,6 +69,24 @@ class Filters extends React.Component {
                     </div>
                 }
                 {
+                    this.props.displaySensor &&
+                    <div className="filter">
+                        <FormControl
+                            className="filters-formControls"
+                            disabled = {this.props.sensors.length === 0}
+                        >
+                        <InputLabel id = "sensorFilter">Sensor</InputLabel>
+                        <Select
+                                labelId = "sensorFilter"
+                                value={this.props.sensor}
+                                onChange={this.props.handleSensorChange}
+                        >
+                        //{this.props.rooms.map((room)=> <MenuItem key = {room._id} value={room}>{room.name}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </div>
+                }
+                {
                     this.props.displayDate &&
                     <div className = "datePicker">
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -96,9 +114,11 @@ Filters.defaultProps = {
     buildings: [],
     floors: [],
     rooms: [],
+    sensors: [],
     date: new Date(),
     displayDate: true,
     displayRoom: false,
+    displaySensor: false
 }
 
 Filters.propTypes ={
@@ -109,12 +129,16 @@ Filters.propTypes ={
     rooms: PropTypes.arrayOf(PropTypes.object),
     room: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     date: PropTypes.object,
+    sensors: PropTypes.arrayOf(PropTypes.object),
+    sensor: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     handleBuildingChange: PropTypes.func,
     handleDateChange: PropTypes.func,
     handleFloorChange: PropTypes.func,
     handleRoomChange: PropTypes.func,
+    handleSensorChange: PropTypes.func,
     displayDate: PropTypes.bool,
     displayRoom: PropTypes.bool,
+    displaySensor: PropTypes.bool
 }
 
 export default Filters;

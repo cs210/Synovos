@@ -98,11 +98,12 @@ const marks = [
 
 
 class Heatmap extends React.Component {
-      constructor(props) {
+    constructor(props) {
         super(props);
         this.state = {
             selectedBuilding: "",
             selectedFloor: "",
+            selectedSensor: "",
             selectedFoorMap: "",
             selectedDate: new Date(),
             buildings:  [],
@@ -112,7 +113,7 @@ class Heatmap extends React.Component {
         this.handleSliderChange = this.handleSliderChange.bind(this );
       }
 
-      componentDidMount() {
+    componentDidMount() {
           axios.get(
               "/buildings", { withCredentials: true}
           ).then(response => {
@@ -127,11 +128,11 @@ class Heatmap extends React.Component {
           });
       }
 
-      handleSliderChange(event) {
-        this.setState({
-            sliderValue: parseInt(event.target.innerText),
-        });
-      }
+    handleSliderChange(event) {
+      this.setState({
+          sliderValue: parseInt(event.target.innerText),
+      });
+    }
 
     fetchFloorData = () => {
         if(this.state.selectedBuilding !== '' &&
@@ -147,7 +148,7 @@ class Heatmap extends React.Component {
             start_date.setHours(0, 0, 0, 0);
             let end_date = new Date(start_date.valueOf());
             end_date.setDate(end_date.getDate() + 1);
-            axios.get('/occupancyData', {
+            axios.get('/sensorData', {
                 params: {
                     room_ids: room_ids.join(','),
                     start_date: start_date,
@@ -155,6 +156,7 @@ class Heatmap extends React.Component {
                 }
             }).then(result => {
                 if(result.status === 200 && Array.isArray(result.data.occupancyData)) {
+                    console.log("successfully got occupancy data");
                     // creating an array of elements with values name, data for display
                     let data = this.state.selectedFloor.rooms.map(room => {
                         let id = room._id;
@@ -169,8 +171,6 @@ class Heatmap extends React.Component {
                             })
                         }
                     });
-                    console.log("Got occupancy data!!")
-                    console.log(data)
                     // checking one last time that we're in a valid state
                     if(this.state.selectedBuilding._id === selectedBuildingId
                         && this.state.selectedFloor._id ===selectedFloorId){
@@ -210,22 +210,32 @@ class Heatmap extends React.Component {
             selectedDate: date,
             data: undefined,
         }, this.fetchFloorData);
-    };
+    }
 
+    handleSensorChange = (event) => {
+      this.setState({
+        selectedSensor: "",
+        data: undefined,
+      }, this.fetchFloorData);
+    }
 
     render() {
-        let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined 
+        let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined
           || this.state.selectedBuilding.floors === null) ? [] : this.state.selectedBuilding.floors;
+        let sensors = (this.state.selectedFloor === '' || this.state.selectedFloor === undefined
+          || this.state.selectedFloor === null) ? [] :[];
         let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
         {
           let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
+          let sensorType = "[Sensor Type]";
+          let sensorValue = values[1]; // Temporary;
           return {
           "key": room.name,
           "opacity": 0.9,
-          "text": room.name + "\n" + values[1],
+          "text": room.name + "\n\n" + sensorType + ": " + sensorValue,
           "fill": values[0],
           ...room.location}}
-        ) : []
+        ) : [];
 
         return (
           <Grid container direction="column" spacing={5}>
@@ -239,6 +249,10 @@ class Heatmap extends React.Component {
                 floor = {this.state.selectedFloor}
                 date = {this.state.selectedDate}
                 handleDateChange = {this.handleDateChange}
+                displaySensor={true}
+                sensors = {sensors}
+                handleSensorChange = {this.handleSensorChange}
+                sensor = {this.state.selectedSensor}
               />
             </Grid>
             <Grid item>

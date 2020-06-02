@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../schema/user.js');
 const Building = require('../schema/building.model');
-const OccupancyData = require('../schema/occupancyData.model');
+const OccupancyData = require('../schema/sensorData.model');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -64,6 +64,13 @@ router.post('/login', function (request, response) {
  * Delete all data associate with one account
  */
 router.post('/delete', function(request, response){
+    // Check if there is a session -- User logged in
+    if (!request.session.login_name){
+        console.log('User not logged in');
+        response.status(401).send('Unauthorized');
+        return;
+    }
+
     console.log('delete user has been called');
     user_id = request.session.user_id;
     // Find Photo with the right id and ind insert the comment
@@ -143,7 +150,6 @@ router.post('/delete', function(request, response){
  * URL /admin/logout - Change the login state to logout and destroy all session
  */
 router.post('/logout', function(request, response){
-    // Check if there is a session -- User logged in
 
     // Remove references with “delete”, then call request.session.destroy(callback)
     delete request.session.login_name;
