@@ -106,6 +106,7 @@ class Heatmap extends React.Component {
             selectedSensor: "",
             selectedFoorMap: "",
             selectedDate: new Date(),
+            sensors: ["Occupancy", "CO2", "Temperature"],
             buildings:  [],
             data: undefined,
             sliderValue: 48,
@@ -196,6 +197,7 @@ class Heatmap extends React.Component {
     }
 
     handleFloorChange = (event) => {
+      console.log(event)
       this.setState({
           selectedFloor: event.target.value,
           selectedFoorMap: this.state.selectedBuilding.floors.find(
@@ -213,21 +215,20 @@ class Heatmap extends React.Component {
     }
 
     handleSensorChange = (event) => {
+      console.log(event.target.value)
       this.setState({
-        selectedSensor: "",
-        data: undefined,
-      }, this.fetchFloorData);
+        selectedSensor: event.target.value,
+      });
+
     }
 
     render() {
         let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined
           || this.state.selectedBuilding.floors === null) ? [] : this.state.selectedBuilding.floors;
-        let sensors = (this.state.selectedFloor === '' || this.state.selectedFloor === undefined
-          || this.state.selectedFloor === null) ? [] :[];
         let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
         {
           let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
-          let sensorType = "[Sensor Type]";
+          let sensorType = "Occupancy";
           let sensorValue = values[1]; // Temporary;
           return {
           "key": room.name,
@@ -236,7 +237,6 @@ class Heatmap extends React.Component {
           "fill": values[0],
           ...room.location}}
         ) : [];
-
         return (
           <Grid container direction="column" spacing={5}>
             <Grid item>
@@ -250,7 +250,7 @@ class Heatmap extends React.Component {
                 date = {this.state.selectedDate}
                 handleDateChange = {this.handleDateChange}
                 displaySensor={true}
-                sensors = {sensors}
+                sensors = {this.state.sensors}
                 handleSensorChange = {this.handleSensorChange}
                 sensor = {this.state.selectedSensor}
               />
