@@ -153,15 +153,27 @@ class Heatmap extends React.Component {
                 params: {
                     room_ids: room_ids.join(','),
                     start_date: start_date,
-                    end_date: end_date
+                    end_date: end_date,
+                    sensor_type: this.state.selectedSensor
                 }
             }).then(result => {
                 if(result.status === 200 && Array.isArray(result.data.occupancyData)) {
                     console.log("successfully got occupancy data");
+                    console.log(result.data.occupancyData);
                     // creating an array of elements with values name, data for display
                     let data = this.state.selectedFloor.rooms.map(room => {
+                        // For each room in floor
+
+                        // get id
                         let id = room._id;
-                        let entry = result.data.occupancyData.find((data) =>{ return data.room_id === id});
+
+                        // get corresponding data for room
+
+                        let entry = result.data.occupancyData.find((room_data) =>{ return room_data.room_id === id});
+
+                        console.log(entry)
+
+
                         return {
                             name: room.name,
                             data: entry === undefined ? undefined : entry.readings.map(entry => {
@@ -172,6 +184,7 @@ class Heatmap extends React.Component {
                             })
                         }
                     });
+                    //console.log(data);
                     // checking one last time that we're in a valid state
                     if(this.state.selectedBuilding._id === selectedBuildingId
                         && this.state.selectedFloor._id ===selectedFloorId){
@@ -218,7 +231,7 @@ class Heatmap extends React.Component {
       console.log(event.target.value)
       this.setState({
         selectedSensor: event.target.value,
-      });
+      }, this.fetchFloorData);
 
     }
 
@@ -228,7 +241,7 @@ class Heatmap extends React.Component {
         let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
         {
           let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
-          let sensorType = this.state.selectedSensor;
+          let sensorType = this.state.selectedSensor === "" ? "[Select Sensor]" : this.state.selectedSensor;
           let sensorValue = values[1]; // Temporary;
           return {
           "key": room.name,
