@@ -5,6 +5,13 @@ const Building = require('../schema/building.model');
 //TODO: filter for those buildings that the user has access for
 //pending on user authentication being built
 router.get('/', (req, res) => {
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
     let user_id = req.session.user_id; // will be used to find user-specific data
 
     try{
@@ -50,6 +57,13 @@ router.patch('/:id', (req,res) => {
 });
 
 router.get('/:id', (req, res)=>{
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
     let id = req.params.id;
     let user_id = req.session.user_id; // will be used to find user-specific data
     console.log("Servicing get request for building with id ", id);
@@ -83,6 +97,13 @@ router.get('/:id', (req, res)=>{
 
 // Create one building
 router.post('/', (req, res) => {
+    // Check if there is a session -- User logged in
+    if (!req.session.login_name){
+        console.log('User not logged in');
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
     const building = Building(req.body);
     let user_id = req.session.user_id; // will be used to find user-specific data
     building.user_id = user_id;

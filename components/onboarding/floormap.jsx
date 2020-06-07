@@ -112,13 +112,14 @@ class RoomHighlight extends React.Component {
               height: Math.max(node.height() * scaleY)}}})
         }}
       />
-      <Text 
+      <Text
         x={this.props.x + (this.props.width * .20)}
         y={this.props.y + (this.props.height * .20)}
         fontStyle="bold"
         text={this.props.text}/>
 
       {this.props.draggable && <Transformer
+          keepRatio={false}
           ref={this.trRef}
           boundBoxFunc={(oldBox, newBox) => {
             if (newBox.width < 5 || newBox.height < 5) {
@@ -137,10 +138,10 @@ class FloorMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-                    stageWidth: 200,
-                    stageHeight: props.mode == "heatmap" ? 400 : 600,
-                    rooms: this.props.rooms,
-                 };
+      stageWidth: 200,
+      stageHeight: props.mode == "heatmap" ? 400 : 600,
+      rooms: this.props.rooms,
+   };
 
     this.stageRef = React.createRef();
     this.layerRef = React.createRef();
@@ -224,7 +225,7 @@ class FloorMap extends React.Component {
       this.setState(prevState => ({
         rooms: [...prevState.rooms,
                           this.newRectangle(this.originalX / this.state.stageWidth, this.originalY / this.state.stageHeight,
-                                         (pos.x - this.originalX) / this.state.stageWidth, (pos.y - this.originalY) / this.state.stageHeight) ]
+                                         ((pos.x - this.originalX) > 3 ? (pos.x - this.originalX) : 3) / this.state.stageWidth, ((pos.y - this.originalY) > 3 ? (pos.y - this.originalY) : 3) / this.state.stageHeight) ]
       }));
     }
   }

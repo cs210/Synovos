@@ -2,7 +2,7 @@
   "name": "project6",
   "version": "1.0.0",
   "description": "CS142 Project #6 - Appserver and Database (React)",
-  "main": "index.html",
+  "main": "home.html",
   "scripts": {
     "start": "node webServer.js",
     "start:eb": "npm run build && npm start",
@@ -33,6 +33,7 @@
     "moment": "^2.24.0",
     "mongoose": "^5.9.1",
     "nodemon": "^2.0.2",
+    "papaparse": "^5.2.0",
     "prismjs": "^1.15.0",
     "promise": "^8.0.2",
     "react": "^16.5.2",
