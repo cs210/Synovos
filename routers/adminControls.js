@@ -15,7 +15,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 // Import functions from hashpasswords.js to hash passwords
-var encryption = require('../modelData/hashpasswords.js');
+var encryption = require('./hashpasswords.js');
 
 var session = require('express-session');
 
