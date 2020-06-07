@@ -18,7 +18,7 @@ var default_background = "../../images/FloormapPreviewImage.png"
 const color_range = [240, 360];
 var color_span = Math.abs(color_range[1] - color_range[0]);
 
-var slider_range = 48;
+var slider_range = 96;
 const daily_mins = 60 * 24;
 function setSliderLabel(value){
   let total_mins = daily_mins/slider_range * value;
@@ -51,18 +51,20 @@ function get_data_range(all_data){
       //console.log("Data array:")
       //console.log(data_array);
       // data array may return undefined
-      console.log(data_array.length)
+      //console.log(data_array.length)
       if(data_array.length > slider_range) {
-        console.log("updating slider_range");
+        //console.log("updating slider_range");
         //update slider range
-        slider_range = data_array.length;
+        slider_range = data_array.length - 1;
       }
       for(var j = 0; j < data_array.length; j++){
         //console.log("data value:");
         let data_value = data_array[j].data;
         //console.log(data_value);
-        if(data_value > global_max) global_max = data_value;
-        if(data_value < global_min) global_min = data_value;
+        if(data_value !== undefined || data_value !== ""){
+          if(data_value > global_max) global_max = data_value;
+          if(data_value < global_min) global_min = data_value;
+        }
       }
     }
   }
@@ -132,6 +134,8 @@ function getColorAndValue(room_data, data_range, sliderValue){
     return ["gray", "No Data"]
   }
   let sensorValue = room_data[sliderValue].data
+  //console.log("slider:" + sliderValue)
+  //console.log("sensor:" + sensorValue)
   let color = get_color(sensorValue, data_range);
   return [color, sensorValue];
 }
@@ -240,9 +244,9 @@ class Heatmap extends React.Component {
           });
       }
 
-    handleSliderChange(event) {
+    handleSliderChange(event, newValue) {
       this.setState({
-          sliderValue: parseInt(event.target.innerText),
+          sliderValue: newValue,
       });
     }
 
@@ -336,7 +340,6 @@ class Heatmap extends React.Component {
     }
 
     handleSensorChange = (event) => {
-      //console.log(event.target.value)
       this.setState({
         selectedSensor: event.target.value,
       }, this.fetchFloorData);
