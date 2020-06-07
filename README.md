@@ -5,7 +5,7 @@ Team Predictivity's goal was to empower building managers to perfectly understan
 We documented all our results here:
 - Project Summary: [Slidedeck](https://docs.google.com/presentation/d/1qpU_UKLbqJDZ6oZMdAlD6Jsx-QJ2avTraa9yf8MUtsM/edit?usp=sharing) 
 - Sketches: [Figma](https://www.figma.com/file/wOsFS1qPWi37BpjUHW58na/CS210_Figma?node-id=0%3A1)
-- Communication: 	[Slack](predictivityworkspace.slack.com)
+- Communication: 	[Slack](https://predictivityworkspace.slack.com)
 - Teacher's College Data: [Gdrive](https://drive.google.com/open?id=1DFASDY-6bd1F9LfzzfqIgpeD1SUZT-J5)
 - Website: [predictivity.io](http://predictivity.io/)
 
@@ -52,5 +52,5 @@ This is the process we used for developing locally:
 6.  Open a pull request on github to merge your branch into master This allows you to review the changes you're merging in one last time.
 
 ### Deploying to predictivity.io
-We are hosting our webapp on AWS. Using CodePipeline, the code in the "ebs-deploy" branch is sent to an Elastic Beanstalk instance that compiles it and updates [our registered domain](www.predictivity.io). Once the latest commit is merged to master, you only need to push your changes to the 'ebs-deploy' branch. The changes will be reflected on [predictivity.io](www.predictivity.io)
+We are hosting our webapp on AWS. Using CodePipeline, the code in the "ebs-deploy" branch is sent to an Elastic Beanstalk instance that compiles it and updates [our registered domain](https://www.predictivity.io). Once the latest commit is merged to master, you only need to push your changes to the 'ebs-deploy' branch. The changes will be reflected on [predictivity.io](https://www.predictivity.io)
 
