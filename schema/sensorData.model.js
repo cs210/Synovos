@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const sensorTypes = ["CO2", "Temperature", "Occupancy"]
+const sensorTypes = ["Occupancy", "CO2", "Temperature"]
 
 const dataReadingSchema = new mongoose.Schema({
     time: Date,

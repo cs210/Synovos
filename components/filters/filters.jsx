@@ -81,8 +81,8 @@ class Filters extends React.Component {
                                 value={this.props.sensor}
                                 onChange={this.props.handleSensorChange}
                         >
-                        //{this.props.rooms.map((room)=> <MenuItem key = {room._id} value={room}>{room.name}</MenuItem>)}
-                            </Select>
+                        {this.props.sensors.map((sensorType, i)=> <MenuItem key={i} value={sensorType}>{sensorType}</MenuItem>)}
+                        </Select>
                         </FormControl>
                     </div>
                 }
@@ -129,7 +129,7 @@ Filters.propTypes ={
     rooms: PropTypes.arrayOf(PropTypes.object),
     room: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     date: PropTypes.object,
-    sensors: PropTypes.arrayOf(PropTypes.object),
+    sensors: PropTypes.arrayOf(PropTypes.string),
     sensor: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     handleBuildingChange: PropTypes.func,
     handleDateChange: PropTypes.func,

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Grid
+    Grid, Typography, Input
 } from "@material-ui/core";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
@@ -12,19 +12,128 @@ import FloorMap from "../onboarding/floormap.jsx"
 var default_background = "../../images/FloormapPreviewImage.png"
 
 //TODO: Make range of colors adaptable to occupancy (range)
-const occupancyColors = ['gray','yellow','orange','red', 'darkred'];
+//const range_red = [60,0];
+//const range_blue = [240,180];
+//var color_span = Math.abs((range_blue[1] - range_blue[0]) + (range_red[1] - range_red[0]));
+const color_range = [240, 360];
+var color_span = Math.abs(color_range[1] - color_range[0]);
 
+var slider_range = 48;
+const daily_mins = 60 * 24;
+function setSliderLabel(value){
+  let total_mins = daily_mins/slider_range * value;
+  let hours = total_mins / 60;
+  let mins = 0;
+  if(hours % 1 !== 0){
+    // is not integer
+    mins = (hours % 1) * 60
+    hours = Math.floor(hours)
+    mins = Math.floor(mins)
+    if (mins < 10) mins = "0" + mins
+  } else {
+    mins = "00"
+  }
 
-function getColorAndValue(data, room, value){
-  if (data === undefined) {
+  return hours + ":" + mins
+}
+// all_data: array of room: {name, data} where data: {time,data}
+function get_data_range(all_data){
+  let global_max = -Infinity;
+  let global_min = Infinity;
+
+  //console.log("All data:")
+  //console.log(all_data);
+  // for room in all data
+  for (var i = 0; i < all_data.length; i++){
+    // array of data objects of {time, data}
+    let data_array = all_data[i].data;
+    if(data_array !== undefined){
+      //console.log("Data array:")
+      //console.log(data_array);
+      // data array may return undefined
+      console.log(data_array.length)
+      if(data_array.length > slider_range) {
+        console.log("updating slider_range");
+        //update slider range
+        slider_range = data_array.length;
+      }
+      for(var j = 0; j < data_array.length; j++){
+        //console.log("data value:");
+        let data_value = data_array[j].data;
+        //console.log(data_value);
+        if(data_value > global_max) global_max = data_value;
+        if(data_value < global_min) global_min = data_value;
+      }
+    }
+  }
+  //console.log("min: " + global_min);
+  //console.log("Max: " + global_max);
+  // update slider marks
+  marks = [
+      {
+          value: 0,
+          label: '12am',
+      },
+
+      {
+          value: slider_range/8,
+          label: '3am',
+      },
+      {
+          value: slider_range/4,
+          label: '6am',
+      },
+      {
+          value: 3 * slider_range/ 8,
+          label: '9am',
+      },
+      {
+          value: slider_range/2,
+          label: '12pm',
+      },
+      {
+          value: 5 * slider_range / 8,
+          label: '3pm',
+      },
+      {
+          value: 3 * slider_range/4,
+          label: '6pm',
+      },
+      {
+          value: 7 * slider_range/8,
+          label: '9pm',
+      },
+      {
+          value: slider_range,
+          label: '11:59pm',
+      },
+  ];
+  return [global_min, global_max]
+}
+
+function get_color(data_value, data_range){
+  let total_data_range = data_range[1] - data_range[0];
+  //console.log("Data range: " + total_data_range);
+  //console.log("Color range: " + color_range);
+  //console.log("data value: " + data_value);
+  let color_value = Math.floor((color_span / total_data_range) * (data_value - data_range[0]));
+  //console.log("color value: "+ color_value);
+  if(color_value < color_range[0]){
+    color_value = color_value + color_range[0];
+  }
+  //console.log(color_value);
+  return "hsl(" + color_value + ",100%,50%)"
+}
+
+// room_data:
+// data_range: [global_min, global_max] sensor values for all rooms in floor
+function getColorAndValue(room_data, data_range, sliderValue){
+  if (room_data === undefined || room_data[sliderValue] === undefined) {
     return ["gray", "No Data"]
   }
-  let occupancy_data = data.filter(element => element.name == room)[0].data
-
-  if (occupancy_data === undefined || occupancy_data[value] === undefined) {
-    return ["gray", "No Data"]
-  }
-  return [occupancyColors[occupancy_data[value].data], occupancy_data[value].data];
+  let sensorValue = room_data[sliderValue].data
+  let color = get_color(sensorValue, data_range);
+  return [color, sensorValue];
 }
 
 const PrettoSlider = withStyles({
@@ -57,41 +166,43 @@ const PrettoSlider = withStyles({
     },
 })(Slider);
 
-const marks = [
+
+var marks = [
     {
         value: 0,
         label: '12am',
     },
+
     {
-        value: 12,
+        value: slider_range/8,
         label: '3am',
     },
     {
-        value: 24,
+        value: slider_range/4,
         label: '6am',
     },
     {
-        value: 36,
+        value: 3 * slider_range/ 8,
         label: '9am',
     },
     {
-        value: 48,
+        value: slider_range/2,
         label: '12pm',
     },
     {
-        value: 60,
+        value: 5 * slider_range / 8,
         label: '3pm',
     },
     {
-        value: 72,
+        value: 3 * slider_range/4,
         label: '6pm',
     },
     {
-        value: 84,
+        value: 7 * slider_range/8,
         label: '9pm',
     },
     {
-        value: 96,
+        value: slider_range,
         label: '11:59pm',
     },
 ];
@@ -106,9 +217,10 @@ class Heatmap extends React.Component {
             selectedSensor: "",
             selectedFoorMap: "",
             selectedDate: new Date(),
+            sensors: ["Occupancy", "CO2", "Temperature"],
             buildings:  [],
             data: undefined,
-            sliderValue: 48,
+            sliderValue: 0,
         };
         this.handleSliderChange = this.handleSliderChange.bind(this );
       }
@@ -152,15 +264,24 @@ class Heatmap extends React.Component {
                 params: {
                     room_ids: room_ids.join(','),
                     start_date: start_date,
-                    end_date: end_date
+                    end_date: end_date,
+                    sensor_type: this.state.selectedSensor
                 }
             }).then(result => {
                 if(result.status === 200 && Array.isArray(result.data.occupancyData)) {
                     console.log("successfully got occupancy data");
                     // creating an array of elements with values name, data for display
                     let data = this.state.selectedFloor.rooms.map(room => {
+                        // For each room in floor
+
+                        // get id
                         let id = room._id;
-                        let entry = result.data.occupancyData.find((data) =>{ return data.room_id === id});
+
+                        // get corresponding data for room
+                        let entry = result.data.occupancyData.find((room_data) =>{ return room_data.room_id === id});
+
+                        //console.log(entry)
+
                         return {
                             name: room.name,
                             data: entry === undefined ? undefined : entry.readings.map(entry => {
@@ -171,6 +292,7 @@ class Heatmap extends React.Component {
                             })
                         }
                     });
+                    //console.log(data);
                     // checking one last time that we're in a valid state
                     if(this.state.selectedBuilding._id === selectedBuildingId
                         && this.state.selectedFloor._id ===selectedFloorId){
@@ -196,6 +318,7 @@ class Heatmap extends React.Component {
     }
 
     handleFloorChange = (event) => {
+      //console.log(event)
       this.setState({
           selectedFloor: event.target.value,
           selectedFoorMap: this.state.selectedBuilding.floors.find(
@@ -213,32 +336,58 @@ class Heatmap extends React.Component {
     }
 
     handleSensorChange = (event) => {
+      //console.log(event.target.value)
       this.setState({
-        selectedSensor: "",
-        data: undefined,
+        selectedSensor: event.target.value,
       }, this.fetchFloorData);
+
     }
 
     render() {
         let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined
           || this.state.selectedBuilding.floors === null) ? [] : this.state.selectedBuilding.floors;
-        let sensors = (this.state.selectedFloor === '' || this.state.selectedFloor === undefined
-          || this.state.selectedFloor === null) ? [] :[];
-        let rooms = this.state.selectedFloor ? this.state.selectedFloor.rooms.map(room =>
-        {
-          let values = getColorAndValue(this.state.data, room.name, this.state.sliderValue);
-          let sensorType = "[Sensor Type]";
-          let sensorValue = values[1]; // Temporary;
-          return {
-          "key": room.name,
-          "opacity": 0.9,
-          "text": room.name + "\n\n" + sensorType + ": " + sensorValue,
-          "fill": values[0],
-          ...room.location}}
-        ) : [];
+        let rooms = [];
+        let data_range = ["",""];
+        if (this.state.selectedFloor !== ""){
+
+          if (this.state.selectedSensor !== "" && this.state.data !== undefined){
+            data_range = get_data_range(this.state.data); // [min, max] values of data for all rooms
+
+            rooms = this.state.selectedFloor.rooms.map(room =>
+              {
+                let [color, sensorValue] = getColorAndValue(this.state.data.filter(element => element.name == room.name)[0].data, data_range, this.state.sliderValue);
+                let sensorType = this.state.selectedSensor;
+
+                return {
+                  "key": room.name,
+                  "opacity": 0.75,
+                  "text": room.name + "\n\n" + sensorType + ": " + sensorValue,
+                  "fill": color,
+                  ...room.location
+                }
+              }
+            )
+          } else {
+            // if sensor not selected, prompt to [Select sensor] and color all rooms gray
+            rooms = this.state.selectedFloor.rooms.map(room =>
+              {
+                let color = "gray";
+                let sensorValue = "No data";
+                let sensorType = "[Select Sensor]";
+                return {
+                  "key": room.name,
+                  "opacity": 0.9,
+                  "text": room.name + "\n\n" + sensorType + ": " + sensorValue,
+                  "fill": color,
+                  ...room.location
+                }
+              }
+            )
+          }
+        }
 
         return (
-          <Grid container direction="column" spacing={5}>
+          <Grid container direction="column" spacing={1}>
             <Grid item>
               <Filters
                 buildings = {this.state.buildings}
@@ -250,11 +399,28 @@ class Heatmap extends React.Component {
                 date = {this.state.selectedDate}
                 handleDateChange = {this.handleDateChange}
                 displaySensor={true}
-                sensors = {sensors}
+                sensors = {this.state.sensors}
                 handleSensorChange = {this.handleSensorChange}
                 sensor = {this.state.selectedSensor}
               />
             </Grid>
+            <Grid item>
+            <img src={"../images/gradientBar.png"} width="100%" height="30%" alt="gradient-bar"/>
+            </Grid>
+            <Grid item>
+              <Grid container justify="space-between">
+                <Typography inline="true" variant="body1" align="left">min:
+                {
+                  (data_range[0]===Infinity || data_range[0] === "")?" -":data_range[0]
+                }
+                </Typography>
+                <Typography inline="true" variant="body1" align="right">max:
+                {
+                  (data_range[1]===-Infinity || data_range[1 ]=== "")?" -":data_range[1]
+                }
+                </Typography>
+                </Grid>
+                </Grid>
             <Grid item>
               <FloorMap
                 currentFloorMap={this.state.selectedFoorMap ? this.state.selectedFoorMap : "../../images/FloormapPreviewImage.png"}
@@ -263,18 +429,17 @@ class Heatmap extends React.Component {
               />
             </Grid>
             <Grid item>
-              <div className="gradientBar"></div>
               <PrettoSlider
-                max={96}
+                max={slider_range}
+                valueLabelFormat={setSliderLabel}
                 valueLabelDisplay="auto"
                 aria-label="pretto slider"
                 marks={marks}
-                defaultValue={12}
+                defaultValue={slider_range/2}
                 onChange={this.handleSliderChange}
                 style={{width: '90%',
                         marginLeft: '2%'}}
               >
-
               </PrettoSlider>
             </Grid>
           </Grid>
