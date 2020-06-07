@@ -16,7 +16,7 @@ We created our web application with a ReactJS frontend (using MaterialUI), NodeJ
 ### ReactJS Frontend ###
 - The main `index.jsx` file that routes URL queries to the specific components can be found in the `src` folder
 - The code for the frontend is located in the `components` folder. The whole web app is built in a modular way, which is why the compenents are split in different sub-folders.
-TODO: Do we need data, images, public & styles, CS210 Heatmap???
+TODO: Delet data, styles (move main.css), CS210 Heatmap???
 
 ### NodeJS Backend ###
 - `webServer.js` is the source backend file. It includes routers that makes the backend more modular.
