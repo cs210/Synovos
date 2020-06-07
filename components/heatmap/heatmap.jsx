@@ -408,7 +408,7 @@ class Heatmap extends React.Component {
               />
             </Grid>
             <Grid item>
-            <img src={"../images/gradientBar.png"} width="100%" height="30%" alt="gradient-bar"/>
+            <img src={"../images/GradientBar.png"} width="100%" height="30%" alt="gradient-bar"/>
             </Grid>
             <Grid item>
               <Grid container justify="space-between">
