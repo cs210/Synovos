@@ -16,12 +16,11 @@ We created our web application with a ReactJS frontend (using MaterialUI), NodeJ
 ### ReactJS Frontend ###
 - The main `index.jsx` file that routes URL queries to the specific components can be found in the `src` folder
 - The code for the frontend is located in the `components` folder. The whole web app is built in a modular way, which is why the compenents are split in different sub-folders.
-TODO: Do we need data, images, public & styles???
+TODO: Do we need data, images, public & styles, CS210 Heatmap???
 
 ### NodeJS Backend ###
 - `webServer.js` is the source backend file. It includes routers that makes the backend more modular.
 - The main part of the backend code can be found in the `routers` folder. `adminControl.js` controls the identity & access management part of the web app, `buildingsRouter.js` includes APIs for handling all the building data, and `sensorDataRouter.js` contains REST APIs for handling all the sensor data.
-TODO: Delete modelData and include that function into routers.
 
 ### MongoDB ###
 We use MongoDB for storing our data. We have three schemas. User stores all user-related data (password, usernames, ...). Building stores all building related data (Buildings, Floors, Rooms). SensorData stores all the readings of the different types of sensors.
