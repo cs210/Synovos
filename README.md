@@ -52,5 +52,5 @@ This is the process we used for developing locally:
 6.  Open a pull request on github to merge your branch into master This allows you to review the changes you're merging in one last time.
 
 ### Deploying to predictivity.io
-We are hosting our webapp on AWS. Using CodePipeline, the code in the "ebs-deploy" branch is sent to an Elastic Beanstalk instance that compiles it and updates [our registered domain](https://www.predictivity.io). Once the latest commit is merged to master, you only need to push your changes to the 'ebs-deploy' branch. The changes will be reflected on [predictivity.io](https://www.predictivity.io)
+We are hosting our webapp on AWS. Using CodePipeline, the code in the "ebs-deploy" branch is sent to an Elastic Beanstalk instance that compiles it and updates [predictivity.io](http://predictivity.io/). We recommend making sure the latest commit is merged to master and doesn't present any problems before pushing to the 'ebs-deploy' branch. The changes will be reflected on [predictivity.io](http://predictivity.io/)
 
