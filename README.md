@@ -5,7 +5,7 @@ Team Predictivity's goal was to empower building managers to perfectly understan
 We documented all our results here:
 - Project Summary: [Slidedeck](https://docs.google.com/presentation/d/1qpU_UKLbqJDZ6oZMdAlD6Jsx-QJ2avTraa9yf8MUtsM/edit?usp=sharing) 
 - Sketches: [Figma](https://www.figma.com/file/wOsFS1qPWi37BpjUHW58na/CS210_Figma?node-id=0%3A1)
-- Communication: 	[Slack](predictivityworkspace.slack.com)
+- Communication: 	[Slack](https://predictivityworkspace.slack.com)
 - Teacher's College Data: [Gdrive](https://drive.google.com/open?id=1DFASDY-6bd1F9LfzzfqIgpeD1SUZT-J5)
 - Website: [predictivity.io](http://predictivity.io/)
 
@@ -16,12 +16,11 @@ We created our web application with a ReactJS frontend (using MaterialUI), NodeJ
 ### ReactJS Frontend ###
 - The main `index.jsx` file that routes URL queries to the specific components can be found in the `src` folder
 - The code for the frontend is located in the `components` folder. The whole web app is built in a modular way, which is why the compenents are split in different sub-folders.
-TODO: Do we need data, images, public & styles???
+TODO: Do we need data, images, public & styles, CS210 Heatmap???
 
 ### NodeJS Backend ###
 - `webServer.js` is the source backend file. It includes routers that makes the backend more modular.
 - The main part of the backend code can be found in the `routers` folder. `adminControl.js` controls the identity & access management part of the web app, `buildingsRouter.js` includes APIs for handling all the building data, and `sensorDataRouter.js` contains REST APIs for handling all the sensor data.
-TODO: Delete modelData and include that function into routers.
 
 ### MongoDB ###
 We use MongoDB for storing our data. We have three schemas. User stores all user-related data (password, usernames, ...). Building stores all building related data (Buildings, Floors, Rooms). SensorData stores all the readings of the different types of sensors.
@@ -53,5 +52,5 @@ This is the process we used for developing locally:
 6.  Open a pull request on github to merge your branch into master This allows you to review the changes you're merging in one last time.
 
 ### Deploying to predictivity.io
-We are hosting our webapp on AWS (TODO Marco - add one, two more sentences). Once the latest commit is merged to master, you only need to push your changes to the 'ebs-deploy' branch. The changes will be reflected on predictivity.io. 
+We are hosting our webapp on AWS. Using CodePipeline, the code in the "ebs-deploy" branch is sent to an Elastic Beanstalk instance that compiles it and updates [predictivity.io](http://predictivity.io/). We recommend making sure the latest commit is merged to master and doesn't present any problems before pushing to the 'ebs-deploy' branch. The changes will be reflected on [predictivity.io](http://predictivity.io/)
 
