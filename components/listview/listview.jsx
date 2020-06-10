@@ -3,6 +3,8 @@ import Filters from './../filters/filters';
 import GraphList from './../graphlist/graphlist';
 import axios from "axios";
 
+const sensorTypes = ["Occupancy", "CO2", "Temperature"];
+
 class Listview extends React.Component {
     constructor(props) {
         super(props);
@@ -10,6 +12,7 @@ class Listview extends React.Component {
             selectedBuilding: "",
             selectedFloor: "",
             selectedDate: new Date(),
+            selectedSensor: sensorTypes[0],
             buildings:  [],
             data: undefined,
         };
@@ -51,6 +54,7 @@ class Listview extends React.Component {
                     room_ids: room_ids.join(','),
                     start_date: start_date,
                     end_date: end_date,
+                    sensor_type: this.state.selectedSensor
                 }
             }).then(result => {
                 if(result.status === 200 && Array.isArray(result.data.occupancyData)) {
@@ -105,6 +109,13 @@ class Listview extends React.Component {
         }, this.fetchFloorData);
     }
 
+    handleSensorChange = (event) => {
+        this.setState({
+            selectedSensor: event.target.value,
+            data: undefined
+        }, this.fetchFloorData)
+    }
+
     render() {
         let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined || this.state.selectedBuilding.floors === null)
             ? [] : this.state.selectedBuilding.floors;
@@ -119,6 +130,10 @@ class Listview extends React.Component {
                     floor = {this.state.selectedFloor}
                     date = {this.state.selectedDate}
                     handleDateChange = {this.handleDateChange}
+                    displaySensor={true}
+                    sensors = {sensorTypes}
+                    sensor = {this.state.selectedSensor}
+                    handleSensorChange = {this.handleSensorChange}
                 />
                 <GraphList
                     data = {this.state.data}
