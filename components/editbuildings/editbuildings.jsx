@@ -4,18 +4,8 @@ import Filters from './../filters/filters';
 import axios from "axios";
 
 const columnMap = {
-    'sensors': [
-        {title: 'Sensor Type', field: 'sensorType'}
-    ],
     'rooms':  [
         {title: 'Room Name', field: 'name'},
-        {
-            title: '# Sensors',
-            field: 'sensors',
-            type: 'numeric',
-            render: rowData => Array.isArray(rowData.sensors) ? rowData.sensors.length : 0,
-            editable: 'never'
-        }
     ],
     'floors': [
         {title: 'Floor Name', field: 'name'},
@@ -47,7 +37,6 @@ class EditBuildings extends React.Component{
         this.state = {
             selectedBuilding: "",
             selectedFloor: "",
-            selectedRoom: "",
             buildings:  [],
         }
     }
@@ -74,13 +63,11 @@ class EditBuildings extends React.Component{
             this.setState({
                 selectedBuilding: "",
                 selectedFloor: "",
-                selectedRoom: "",
             });
         } else {
             this.setState({
                 selectedBuilding: event.target.value,
                 selectedFloor: "",
-                selectedRoom: "",
             });
         }
     }
@@ -89,24 +76,10 @@ class EditBuildings extends React.Component{
         if(this.state.selectedFloor._id === event.target.value._id){
             this.setState({
                 selectedFloor: "",
-                selectedRoom: "",
             });
         } else {
             this.setState({
                 selectedFloor: event.target.value,
-                selectedRoom: "",
-            });
-        }
-    }
-
-    handleRoomChange = (event) => {
-        if(this.state.selectedRoom._id === event.target.value._id){
-            this.setState({
-                selectedRoom: "",
-            });
-        } else {
-            this.setState({
-                selectedRoom: event.target.value,
             });
         }
     }
@@ -121,20 +94,11 @@ class EditBuildings extends React.Component{
         ){
             if(this.state.selectedFloor !== '') {
                 let floor = updated_building.floors.find(floor => floor._id === this.state.selectedFloor._id);
-                if(floor !== undefined && this.state.selectedRoom !== ''){
-                    this.setState({
-                        buildings: buildingsCopy,
-                        selectedBuilding: updated_building,
-                        selectedFloor: floor,
-                        selectedRoom: floor.rooms.find(room => room._id === this.state.selectedRoom._id)
-                    });
-                } else {
-                    this.setState({
-                        buildings: buildingsCopy,
-                        selectedBuilding: updated_building,
-                        selectedFloor: floor
-                    })
-                }
+                this.setState({
+                    buildings: buildingsCopy,
+                    selectedBuilding: updated_building,
+                    selectedFloor: floor
+                })
             } else {
                 this.setState({
                     buildings: buildingsCopy,
@@ -151,21 +115,7 @@ class EditBuildings extends React.Component{
     onRowUpdate = (newData) =>
         new Promise((resolve, reject) => {
             let newBuilding = JSON.parse(JSON.stringify(this.state.selectedBuilding));
-            if(this.state.selectedRoom !== ''){
-                console.log('updating a sensor');
-                //updating a sensor
-                let sensors = newBuilding.floors.find(floor =>  floor._id === this.state.selectedFloor._id)
-                    .rooms.find(room => room._id === this.state.selectedRoom._id)
-                    .sensors
-                let idx = sensors.findIndex(sensor => sensor._id === newData._id);
-                if(idx === -1){
-                    console.error("Couldn't update building record");
-                    reject();
-                    return;
-                } else{
-                    sensors[idx] = newData;
-                }
-            } else if(this.state.selectedFloor !== ''){
+            if(this.state.selectedFloor !== ''){
                 //updating a room
                 console.log('updating a room');
                 let rooms = newBuilding.floors.find(floor =>  floor._id === this.state.selectedFloor._id)
@@ -221,18 +171,10 @@ class EditBuildings extends React.Component{
     render() {
         let floors = (this.state.selectedBuilding === '' || this.state.selectedBuilding.floors === undefined || this.state.selectedBuilding.floors === null)
             ? [] : this.state.selectedBuilding.floors;
-        let rooms = (this.state.selectedFloor === '' || this.state.selectedFloor.rooms === undefined || this.state.selectedFloor.rooms === null)
-            ? [] : this.state.selectedFloor.rooms;
         let data = [];
         let columns = [];
         let title = '';
-        // Choosing data to display
-        if(this.state.selectedRoom !== ''){
-            // Room selected, displaying sensors
-            title = this.state.selectedRoom.name + "'s sensors";
-            data = Array.isArray(this.state.selectedRoom.sensors) ? this.state.selectedRoom.sensors : [];
-            columns = columnMap['sensors'];
-        } else if(this.state.selectedFloor !== ''){
+        if(this.state.selectedFloor !== ''){
             // Floor selected, displaying rooms
             title = this.state.selectedFloor.name + "'s rooms";
             data = Array.isArray(this.state.selectedFloor.rooms) ? this.state.selectedFloor.rooms : [];
@@ -258,10 +200,6 @@ class EditBuildings extends React.Component{
                     handleFloorChange = {this.handleFloorChange}
                     floor = {this.state.selectedFloor}
                     displayDate = {false}
-                    displayRoom={true}
-                    handleRoomChange = {this.handleRoomChange}
-                    rooms = {rooms}
-                    room = {this.state.selectedRoom}
                 />
                 <MaterialTable
                     title = {title}
