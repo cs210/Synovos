@@ -339,9 +339,9 @@ class Heatmap extends React.Component {
         }, this.fetchFloorData);
     }
 
-    handleSensorChange = (event, newValue) => {
+    handleSensorChange = (event) => {
       this.setState({
-        selectedSensor: newValue,
+        selectedSensor: event.target.value,
       }, this.fetchFloorData);
 
     }
