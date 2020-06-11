@@ -218,7 +218,7 @@ class Heatmap extends React.Component {
         this.state = {
             selectedBuilding: "",
             selectedFloor: "",
-            selectedSensor: "",
+            selectedSensor: "Occupancy",
             selectedFoorMap: "",
             selectedDate: new Date(),
             sensors: ["Occupancy", "CO2", "Temperature"],
