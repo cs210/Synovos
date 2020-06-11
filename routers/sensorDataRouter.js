@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const SensorData = require('../schema/sensorData.model');
 const ObjectId = require('mongoose').Types.ObjectId;
-
+const axios = require('axios')
+const OCCUPANCY_ENDPOINT = 'https://5yyzvmal40.execute-api.us-west-2.amazonaws.com/prod/kmeans-prediction';
 
 /**
  * params:
@@ -146,6 +147,23 @@ router.post('/', (req, res) => {
                 return;
             }else {
                 res.status(201).json({ message: "SensorData created successfully", occupancyData: result})
+
+                // Creating occupancy data
+                if(occData.sensor_type == 'CO2'){
+                    axios.post(OCCUPANCY_ENDPOINT, result).then((response) => {
+                        if(response.data.statusCode == 200){
+                            console.log('predicted occupancy successfully');
+                            const occData = SensorData(response.data.body);
+                            occData.save((err, result) => {
+                               if(err){
+                                   console.log("Couldn't save occupancy data")
+                               } else{
+                                   console.log("Saved occupancy data successfully with id ", result._id)
+                               }
+                            });
+                        }
+                    });
+                }
                 return;
             }
         })
